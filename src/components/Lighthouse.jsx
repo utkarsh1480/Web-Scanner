@@ -1,25 +1,29 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Zap, Shield, Search, Smartphone, BarChart2, Mail, Phone, Twitter } from 'lucide-react';
+import { ArrowLeft, Zap, Shield, Search, Smartphone, BarChart2, Mail, Phone, Twitter, Sun, Moon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import ScoreCard from './scorecard';
 import SiteGrade from './SiteGrade';
+import { useLanguage } from '../Context/LanguageContext';
+import { useTheme } from '../Context/ThemeContext';
 
 const Lighthouse = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { analysisData } = location.state || {};
+  const { t } = useLanguage();
+  const { theme, toggleTheme } = useTheme();
 
   if (!analysisData) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <div className="text-center space-y-4 max-w-md w-full">
-          <h1 className="text-xl sm:text-2xl font-bold text-muted-foreground">No Analysis Data Found</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-muted-foreground">{t.lighthouseNoData}</h1>
           <Button onClick={() => navigate('/')} className="btn-primary w-full sm:w-auto">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Home
+            {t.lighthouseBack}
           </Button>
         </div>
       </div>
@@ -42,32 +46,25 @@ const Lighthouse = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header Section */}
-      <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container-custom py-3 sm:py-4 px-4">
-          <div className="flex items-center justify-between">
-            <Button 
-              variant="ghost" 
-              onClick={() => navigate('/')}
-              className="hover:bg-primary/10 -ml-2"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              <span className="hidden sm:inline">Back</span>
-            </Button>
-            <div className="flex items-center space-x-2">
-              <img 
-                src="/public/newlogo.png" 
-                alt="Website Grader" 
-                className="h-6 sm:h-8 w-auto"
-              />
-              <h1 className="text-lg sm:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/80">
-                Website Grader
-              </h1>
-            </div>
-          </div>
-        </div>
-      </header>
+    <div className="bg-background">
+      {/* Sub-header with Go Back and Theme Toggle */}
+      <div className="container-custom px-4 py-4 flex items-center justify-between">
+        <Button 
+          variant="ghost" 
+          onClick={() => navigate('/')}
+          className="hover:bg-primary/10 flex items-center gap-2"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>{t.lighthouseBackShort}</span>
+        </Button>
+        <button
+          onClick={toggleTheme}
+          className="p-2 rounded-xl bg-secondary hover:bg-secondary/80 text-foreground transition-all duration-300"
+          aria-label="Toggle theme"
+        >
+          {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+        </button>
+      </div>
 
       {/* Main Content */}
       <main className="container-custom py-6 sm:py-12 px-4">
@@ -76,7 +73,7 @@ const Lighthouse = () => {
           <div className="space-y-6 sm:space-y-8">
             {/* URL Display */}
             <div className="mb-6 sm:mb-8">
-              <h2 className="text-xl sm:text-2xl font-semibold mb-2">Analysis Results</h2>
+              <h2 className="text-xl sm:text-2xl font-semibold mb-2">{t.lighthouseAnalysis}</h2>
               <p className="text-sm sm:text-base text-muted-foreground break-all">{url}</p>
             </div>
 
@@ -88,7 +85,7 @@ const Lighthouse = () => {
             {/* Contact Links */}
             <Card className="hover:shadow-lg transition-shadow">
               <CardHeader className="p-4 sm:p-6">
-                <CardTitle className="text-lg sm:text-xl">Contact Me</CardTitle>
+                <CardTitle className="text-lg sm:text-xl">{t.lighthouseContactMe}</CardTitle>
               </CardHeader>
               <CardContent className="p-4 sm:p-6">
                 <div className="flex justify-center space-x-6">
@@ -127,7 +124,7 @@ const Lighthouse = () => {
               <CardHeader className="p-4 sm:p-6">
                 <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
                   <BarChart2 className="w-5 h-5" />
-                  Overall Score
+                  {t.lighthouseOverallScore}
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-4 sm:p-6">
@@ -204,26 +201,6 @@ const Lighthouse = () => {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-secondary/50 py-6 sm:py-8 mt-8 sm:mt-12">
-        <div className="container-custom px-4">
-          <div className="flex flex-col items-center">
-            <div className="flex items-center space-x-3 sm:space-x-4 mb-3 sm:mb-4">
-              <img 
-                src="/public/newlogo.png" 
-                alt="Website Grader" 
-                className="h-8 sm:h-12 w-auto"
-              />
-              <h1 className="text-lg sm:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/80">
-                Website Grader <sup className="text-xs sm:text-sm">®</sup>
-              </h1>
-            </div>
-            <p className="text-xs sm:text-sm text-muted-foreground">
-              © {new Date().getFullYear()} Website Grader. All rights reserved.
-            </p>
-      </div>
-      </div>
-      </footer>
     </div>
   );
 };

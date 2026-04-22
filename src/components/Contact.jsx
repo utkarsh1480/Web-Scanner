@@ -154,11 +154,12 @@ import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { Toaster } from "./ui/toaster";
 import { useToast } from "../hooks/use-toast";
-import { color } from "framer-motion";
+import { useLanguage } from '../Context/LanguageContext';
 
 const Contact = function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const form = useForm({
     defaultValues: {
@@ -190,15 +191,15 @@ const Contact = function Contact() {
       );
 
       toast({
-        title: "Message Sent!",
-        description: "Thank you for your message. We'll get back to you soon!",
+        title: t.contactSuccess,
+        description: t.contactSuccessDesc,
       });
       form.reset();
     } catch (error) {
-      console.error("EmailJS Error:", error);
+      // console.error("EmailJS Error:", error);
       toast({
-        title: "Error Sending Message",
-        description: "Something went wrong. Please try again later.",
+        title: t.contactError,
+        description: t.contactErrorDesc,
         status: "error",
       });
     } finally {
@@ -207,14 +208,13 @@ const Contact = function Contact() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden md:max-w-2xl">
+    <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md mx-auto bg-card rounded-lg shadow-md overflow-hidden md:max-w-2xl">
         <div className="p-8 w-full">
-          <div className="uppercase tracking-wide text-sm text-primary font-semibold mb-1">Contact Us</div>
-          <h2 className="block mt-1 text-lg leading-tight font-medium text-black">We'd love to hear from you!</h2>
+          <div className="uppercase tracking-wide text-sm text-primary font-semibold mb-1">{t.contactUs}</div>
+          <h2 className="block mt-1 text-lg leading-tight font-medium text-foreground">{t.contactHeading}</h2>
           <p className="mt-2 text-muted-foreground">
-            Have questions about our Website Grader? Want to improve your website's performance, SEO, or best practices?
-            Reach out to us!
+            {t.contactSubtext}
           </p>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="mt-6 space-y-6">
@@ -224,11 +224,11 @@ const Contact = function Contact() {
                 rules={{ required: "Name is required" }}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel>{t.contactName}</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <FiUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                        <Input placeholder="Your name" className="pl-10" {...field}  style={{color:"black"}}/>
+                        <FiUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                        <Input placeholder={t.contactNamePlaceholder} className="pl-10 text-foreground" {...field} />
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -247,11 +247,11 @@ const Contact = function Contact() {
                 }}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>{t.contactEmail}</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                        <Input placeholder="john@example.com" className="pl-10" {...field}  style={{color:"black"}}/>
+                        <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                        <Input placeholder={t.contactEmailPlaceholder} className="pl-10 text-foreground" {...field} />
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -270,11 +270,11 @@ const Contact = function Contact() {
                 }}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Mobile Number</FormLabel>
+                    <FormLabel>{t.contactMobile}</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <FiPhone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                        <Input placeholder="1234567890" className="pl-10" {...field} style={{color:"black"}} />
+                        <FiPhone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                        <Input placeholder={t.contactMobilePlaceholder} className="pl-10 text-foreground" {...field} />
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -287,11 +287,11 @@ const Contact = function Contact() {
                 rules={{ required: "Message is required" }}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Message</FormLabel>
+                    <FormLabel>{t.contactMessage}</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <FiMessageSquare className="absolute left-3 top-3 text-black" />
-                        <Textarea placeholder="Type your message here." className="pl-10 min-h-[100px]" {...field}  style={{color:"black"}}/>
+                        <FiMessageSquare className="absolute left-3 top-3 text-muted-foreground" />
+                        <Textarea placeholder={t.contactMessagePlaceholder} className="pl-10 min-h-[100px] text-foreground" {...field} />
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -299,7 +299,7 @@ const Contact = function Contact() {
                 )}
               />
               <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting ? "Sending..." : "Send Message"}
+                {isSubmitting ? t.contactSending : t.contactSend}
               </Button>
             </form>
           </Form>

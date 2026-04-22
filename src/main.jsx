@@ -7,6 +7,8 @@ import Lighthouse from "./components/Lighthouse.jsx";
 import { PageSpeedProvider } from "./Context/context.jsx";
 import PerformanceWrapper from "./components/PerformanceWrapper .jsx";
 import Contact from "./components/Contact.jsx";
+import { LanguageProvider } from "./Context/LanguageContext.jsx";
+import { ThemeProvider } from "./Context/ThemeContext.jsx";
 
 // import PerformanceCard from "./components/PerformanceCard.jsx";
 const router = createBrowserRouter([
@@ -19,18 +21,21 @@ const router = createBrowserRouter([
     element: <Lighthouse />,
   },
   {
-    path:'/contact',
-    element:<Contact/>
+    path: '/contact',
+    element: <Contact />
   }
- 
+
 ]);
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <PageSpeedProvider>
-      <RouterProvider router={router} />
-      {/* <PerformanceWrapper /> */}
-    </PageSpeedProvider> 
-
+    <ThemeProvider>
+      <PageSpeedProvider>
+        <LanguageProvider>
+          <RouterProvider router={router} />
+          {/* <PerformanceWrapper /> */}
+        </LanguageProvider>
+      </PageSpeedProvider>
+    </ThemeProvider>
   </StrictMode>
-  
+
 );

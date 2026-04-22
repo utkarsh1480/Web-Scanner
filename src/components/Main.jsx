@@ -60,7 +60,7 @@ const BottomFaq = () => {
             height="462"
             width="470"
             src="//static.hsappstatic.net/website-grader-ui/static-1.3755/img/website-performance-rating.jpg"
-            alt="Webpage score after performing a free test with the Website Grader"
+            alt="Webpage score after performing a free test with the Web Scanner"
             className="max-w-full h-auto" // Ensure responsiveness
           />
         </div>
