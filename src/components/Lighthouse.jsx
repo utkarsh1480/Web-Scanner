@@ -49,8 +49,8 @@ const Lighthouse = () => {
     <div className="bg-background">
       {/* Sub-header with Go Back and Theme Toggle */}
       <div className="container-custom px-4 py-4 flex items-center justify-between">
-        <Button 
-          variant="ghost" 
+        <Button
+          variant="ghost"
           onClick={() => navigate('/')}
           className="hover:bg-primary/10 flex items-center gap-2"
         >
@@ -89,22 +89,22 @@ const Lighthouse = () => {
               </CardHeader>
               <CardContent className="p-4 sm:p-6">
                 <div className="flex justify-center space-x-6">
-                  <a 
-                    href="mailto:santoshpatelvns5@gmail.com" 
+                  <a
+                    href="mailto:utkarsh1480759@gmail.com"
                     className="text-muted-foreground hover:text-primary transition-colors p-2"
                     aria-label="Email"
                   >
                     <Mail className="w-5 h-5 sm:w-6 sm:h-6" />
                   </a>
-                  <a 
-                    href="tel:+918467941850" 
+                  <a
+                    href="tel:+919628300323"
                     className="text-muted-foreground hover:text-primary transition-colors p-2"
                     aria-label="Phone"
                   >
                     <Phone className="w-5 h-5 sm:w-6 sm:h-6" />
                   </a>
-                  <a 
-                    href="https://x.com/Santoshp3259330" 
+                  <a
+                    href="https://x.com/UTKARSH68694578"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-muted-foreground hover:text-primary transition-colors p-2"
@@ -183,8 +183,8 @@ const Lighthouse = () => {
                         </span>
                         <span className="text-sm sm:text-base text-muted-foreground">/ {item.maxScore}</span>
                       </div>
-                      <Progress 
-                        value={item.score} 
+                      <Progress
+                        value={item.score}
                         className={`h-1.5 sm:h-2 ${getScoreBgColor(item.score)}`}
                       />
                     </div>
@@ -194,10 +194,10 @@ const Lighthouse = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Detailed Report Section */}
         <div className="mt-12">
-           <SiteGrade data={analysisData} />
+          <SiteGrade data={analysisData} />
         </div>
       </main>
 
