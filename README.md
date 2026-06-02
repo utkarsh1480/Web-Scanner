@@ -127,7 +127,7 @@ The app uses the following external services:
 
 ## 🤝 Contributing
 
-Contributions, issues, and feature requests are welcome! Feel free to open an issue or submit a pull request.
+Contributions, issues, and feature requests are welcome! Feel free to open an issue or submit a pull request..
 
 ---
 
