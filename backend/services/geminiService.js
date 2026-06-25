@@ -51,3 +51,118 @@ For each issue:
         throw new Error('Failed to generate AI recommendations');
     }
 }
+
+export async function generateCodeReview(fileContents, repoName) {
+    if (!fileContents || fileContents.length === 0) {
+        return { performance: [], seo: [], accessibility: [], bestPractices: [], security: [] };
+    }
+
+    try {
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({
+            model: "gemini-2.5-pro", // use pro for large context
+            generationConfig: {
+                responseMimeType: "application/json",
+                responseSchema: {
+                    type: SchemaType.OBJECT,
+                    properties: {
+                        performance: {
+                            type: SchemaType.ARRAY,
+                            items: {
+                                type: SchemaType.OBJECT,
+                                properties: {
+                                    file: { type: SchemaType.STRING },
+                                    issue: { type: SchemaType.STRING },
+                                    solution: { type: SchemaType.STRING },
+                                    priority: { type: SchemaType.STRING, description: "High, Medium, Low" },
+                                    codeExample: { type: SchemaType.STRING }
+                                },
+                                required: ["file", "issue", "solution", "priority"]
+                            }
+                        },
+                        seo: {
+                            type: SchemaType.ARRAY,
+                            items: {
+                                type: SchemaType.OBJECT,
+                                properties: {
+                                    file: { type: SchemaType.STRING },
+                                    issue: { type: SchemaType.STRING },
+                                    solution: { type: SchemaType.STRING },
+                                    priority: { type: SchemaType.STRING, description: "High, Medium, Low" },
+                                    codeExample: { type: SchemaType.STRING }
+                                },
+                                required: ["file", "issue", "solution", "priority"]
+                            }
+                        },
+                        accessibility: {
+                            type: SchemaType.ARRAY,
+                            items: {
+                                type: SchemaType.OBJECT,
+                                properties: {
+                                    file: { type: SchemaType.STRING },
+                                    issue: { type: SchemaType.STRING },
+                                    solution: { type: SchemaType.STRING },
+                                    priority: { type: SchemaType.STRING, description: "High, Medium, Low" },
+                                    codeExample: { type: SchemaType.STRING }
+                                },
+                                required: ["file", "issue", "solution", "priority"]
+                            }
+                        },
+                        security: {
+                            type: SchemaType.ARRAY,
+                            items: {
+                                type: SchemaType.OBJECT,
+                                properties: {
+                                    file: { type: SchemaType.STRING },
+                                    issue: { type: SchemaType.STRING },
+                                    solution: { type: SchemaType.STRING },
+                                    priority: { type: SchemaType.STRING, description: "High, Medium, Low" },
+                                    codeExample: { type: SchemaType.STRING }
+                                },
+                                required: ["file", "issue", "solution", "priority"]
+                            }
+                        },
+                        bestPractices: {
+                            type: SchemaType.ARRAY,
+                            items: {
+                                type: SchemaType.OBJECT,
+                                properties: {
+                                    file: { type: SchemaType.STRING },
+                                    issue: { type: SchemaType.STRING },
+                                    solution: { type: SchemaType.STRING },
+                                    priority: { type: SchemaType.STRING, description: "High, Medium, Low" },
+                                    codeExample: { type: SchemaType.STRING }
+                                },
+                                required: ["file", "issue", "solution", "priority"]
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        const filesContext = fileContents.map(f => `File: ${f.path}\n\`\`\`\n${f.content}\n\`\`\``).join("\n\n");
+
+        const prompt = `You are a senior full-stack engineer. Analyze this repository: ${repoName}
+        
+Here are the files:
+${filesContext}
+
+Analyze the codebase and provide file-level suggestions for:
+1. Performance improvements
+2. SEO improvements
+3. Accessibility improvements
+4. Security improvements
+5. Best practices
+
+For each issue, cite the specific file, explain the issue, provide a solution, assign a priority, and include code examples where applicable.`;
+
+        const result = await model.generateContent(prompt);
+        const responseText = result.response.text();
+        return JSON.parse(responseText);
+
+    } catch (error) {
+        console.error('Error generating AI code review:', error);
+        throw new Error('Failed to generate AI code review');
+    }
+}

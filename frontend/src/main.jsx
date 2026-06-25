@@ -13,18 +13,9 @@ import { ThemeProvider } from "./Context/ThemeContext.jsx";
 // import PerformanceCard from "./components/PerformanceCard.jsx";
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "*",
     element: <App />,
-  },
-  {
-    path: "Lighthouse",
-    element: <Lighthouse />,
-  },
-  {
-    path: '/contact',
-    element: <Contact />
   }
-
 ]);
 createRoot(document.getElementById("root")).render(
   <StrictMode>
