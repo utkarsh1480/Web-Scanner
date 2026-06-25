@@ -6,6 +6,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/componen
 import { Progress } from '@/components/ui/progress';
 import ScoreCard from './scorecard';
 import SiteGrade from './SiteGrade';
+import AIRecommendations from './AIRecommendations';
 import { useLanguage } from '../Context/LanguageContext';
 import { useTheme } from '../Context/ThemeContext';
 
@@ -46,8 +47,8 @@ const Lighthouse = () => {
   };
 
   return (
-    <div className="bg-background">
-      {/* Sub-header with Go Back and Theme Toggle */}
+    <div className="bg-background pb-12">
+      {/* Sub-header with Go Back */}
       <div className="container-custom px-4 py-4 flex items-center justify-between">
         <Button
           variant="ghost"
@@ -57,13 +58,6 @@ const Lighthouse = () => {
           <ArrowLeft className="w-4 h-4" />
           <span>{t.lighthouseBackShort}</span>
         </Button>
-        <button
-          onClick={toggleTheme}
-          className="p-2 rounded-xl bg-secondary hover:bg-secondary/80 text-foreground transition-all duration-300"
-          aria-label="Toggle theme"
-        >
-          {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-        </button>
       </div>
 
       {/* Main Content */}
@@ -197,6 +191,11 @@ const Lighthouse = () => {
 
         {/* Detailed Report Section */}
         <div className="mt-12">
+          {analysisData.recommendations && analysisData.recommendations.length > 0 && (
+             <div className="mb-12">
+                <AIRecommendations recommendations={analysisData.recommendations} />
+             </div>
+          )}
           <SiteGrade data={analysisData} />
         </div>
       </main>
