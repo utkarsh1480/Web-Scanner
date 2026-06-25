@@ -1,6 +1,6 @@
-import { getPageSpeedReport } from '../../backend/services/pageSpeedService.js';
-import { extractIssues } from '../../backend/services/lighthouseExtractor.js';
-import { generateAIRecommendations } from '../../backend/services/geminiService.js';
+import { getPageSpeedReport } from '../backend/services/pageSpeedService.js';
+import { extractIssues } from '../backend/services/lighthouseExtractor.js';
+import { generateAIRecommendations } from '../backend/services/geminiService.js';
 
 export default async function handler(req, res) {
     // Only allow POST
