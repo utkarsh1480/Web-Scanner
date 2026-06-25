@@ -61,45 +61,20 @@ const WebsiteGrader = () => {
         return;
       }
 
-      const apiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(checkedUrl)}&category=performance&category=accessibility&category=seo&category=best-practices&key=AIzaSyAMChAvUuiA4K0DCd78I_7ZZZ-2RI9WJAg`;
-      const response = await fetch(apiUrl);
-
-      if (response.status === 400) {
-        setError('Invalid URL or request. Please check your website address and try again.');
-        setLoading(false);
-        return;
-      }
-      if (response.status === 429) {
-        setError('You have made too many requests. Please wait a minute and try again.');
-        setLoading(false);
-        return;
-      }
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      const lighthouseResult = data?.lighthouseResult;
-      if (!lighthouseResult) {
-        throw new Error("Lighthouse data is not available in the API response.");
-      }
-
-      const performanceScore = parseFloat((lighthouseResult.categories?.performance?.score * 100 || 0).toFixed(1));
-      const accessibilityScore = parseFloat((lighthouseResult.categories?.accessibility?.score * 100 || 0).toFixed(1));
-      const bestPracticesScore = parseFloat((lighthouseResult.categories?.["best-practices"]?.score * 100 || 0).toFixed(1));
-      const seoScore = parseFloat((lighthouseResult.categories?.seo?.score * 100 || 0).toFixed(1));
-
-      // Extract additional metrics
-      const screenshot = lighthouseResult.audits?.["final-screenshot"]?.details?.data;
-      const pageSize = lighthouseResult.audits?.["total-byte-weight"]?.displayValue;
-      const pageRequests = lighthouseResult.audits?.["network-requests"]?.details?.items?.length;
-      const pageSpeed = lighthouseResult.audits?.["interactive"]?.displayValue;
-
+      // Call backend API instead of calling PageSpeed directly
+      const { analyzeWebsite } = await import('../services/api.js');
+      const data = await analyzeWebsite(checkedUrl);
+      
+      const { scores, metrics, recommendations, url: verifiedUrl } = data;
+      
+      const performanceScore = scores.details.find(d => d.label === 'Performance')?.score || 0;
+      const accessibilityScore = scores.details.find(d => d.label === 'Accessibility')?.score || 0;
+      const bestPracticesScore = scores.details.find(d => d.label === 'Best Practices')?.score || 0;
+      const seoScore = scores.details.find(d => d.label === 'SEO')?.score || 0;
 
       const emailContent = `
         
-         ${url}
+         ${verifiedUrl}
         Performance Score: ${performanceScore}
         Accessibility Score:${accessibilityScore}
         Best Practices Score: ${bestPracticesScore}
@@ -122,28 +97,7 @@ const WebsiteGrader = () => {
         '-243iobnGw0PSzPnp' // Replace with your EmailJS public key
       );
 
-      // console.log('Email sent successfully!');
-
-      const resultData = {
-        url,
-        screenshot,
-        metrics: {
-          pageSize,
-          pageRequests,
-          pageSpeed,
-        },
-        scores: {
-          aggregate: (performanceScore + accessibilityScore + bestPracticesScore + seoScore) / 4,
-          details: [
-            { label: 'Performance', score: performanceScore, maxScore: 100, color: 'red' },
-            { label: 'Accessibility', score: accessibilityScore, maxScore: 100, color: 'orange' },
-            { label: 'Best Practices', score: bestPracticesScore, maxScore: 100, color: 'blue' },
-            { label: 'SEO', score: seoScore, maxScore: 100, color: 'green' },
-          ],
-        },
-      }
-
-      navigate('/lighthouse', { state: { analysisData: resultData } })
+      navigate('/lighthouse', { state: { analysisData: data } })
     } catch (error) {
       setError(`Failed to fetch performance data: ${error.message}`)
     } finally {
