@@ -17,8 +17,79 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background: linear-gradient(135deg, var(--background) 0%, var(--background-secondary) 100%);
+  background: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.45)), url('/pastel_clay_bg.png') center/cover no-repeat fixed;
+  color: #ffffff;
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dark body {
+  background: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.65)), url('/pastel_clay_bg.png') center/cover no-repeat fixed;
+  color: #ffffff;
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin-reverse-slow {
+  from {
+    transform: rotate(360deg);
+  }
+
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.2;
+  }
+
+  50% {
+    transform: scale(1.05);
+    opacity: 0.5;
+  }
+
+  100% {
+    transform: scale(0.95);
+    opacity: 0.2;
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 25s linear infinite;
+}
+
+.animate-spin-reverse-slow {
+  animation: spin-reverse-slow 20s linear infinite;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 4s ease-in-out infinite;
 }
 
 h1 {
@@ -78,50 +149,50 @@ button:focus-visible {
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --background-secondary: 210 40% 98%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 40 20% 98.4%;
+    --background-secondary: 40 18% 95.5%;
+    --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 10% 3.9%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 40 12% 94.5%;
+    --secondary-foreground: 240 10% 3.9%;
+    --muted: 40 12% 94.5%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 40 12% 94.5%;
+    --accent-foreground: 240 10% 3.9%;
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
-    --radius: 1rem;
+    --destructive-foreground: 0 0% 98%;
+    --border: 40 8% 88.5%;
+    --input: 40 8% 88.5%;
+    --ring: 240 10% 3.9%;
+    --radius: 2rem;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --background-secondary: 217.2 32.6% 17.5%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --background: 240 10% 3.9%;
+    --background-secondary: 240 10% 6%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 10% 3.9%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
   }
 }
 
@@ -129,8 +200,9 @@ button:focus-visible {
   * {
     @apply border-border;
   }
+
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply antialiased;
   }
 }
 
@@ -139,21 +211,21 @@ button:focus-visible {
   .container-custom {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
-  
+
   .card {
-    @apply bg-card rounded-2xl shadow-lg p-6 md:p-8 transition-all duration-300 hover:shadow-xl border border-border/50;
+    @apply bg-white/30 dark:bg-zinc-950/30 border border-white/50 dark:border-zinc-800/30 backdrop-blur-xl rounded-[2.5rem] p-8 transition-all duration-300 shadow-xl;
   }
-  
+
   .btn-primary {
-    @apply bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300 rounded-2xl px-6 py-3 font-medium shadow-sm hover:shadow-md;
+    @apply bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-all duration-300 rounded-full px-6 py-3 font-semibold shadow-md hover:shadow-lg;
   }
-  
+
   .btn-secondary {
-    @apply bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-all duration-300 rounded-2xl px-6 py-3 font-medium shadow-sm hover:shadow-md;
+    @apply bg-white/30 dark:bg-zinc-900/30 border border-white/40 dark:border-zinc-800/40 text-foreground dark:text-white backdrop-blur-sm hover:bg-white/50 dark:hover:bg-zinc-900/50 transition-all duration-300 rounded-full px-6 py-3 font-semibold shadow-sm;
   }
 
   .nav-link {
-    @apply text-foreground/80 hover:text-primary transition-colors duration-200 font-medium;
+    @apply text-foreground/85 hover:text-foreground transition-colors duration-200 font-medium;
   }
 
   .section {
@@ -165,11 +237,11 @@ button:focus-visible {
   }
 
   .input-field {
-    @apply w-full rounded-2xl border border-border bg-background px-4 py-3 text-foreground transition-colors duration-200 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20;
+    @apply w-full rounded-full border border-border/90 bg-background/55 px-5 py-3 text-foreground transition-all duration-200 focus:border-foreground focus:outline-none focus:ring-1 focus:ring-foreground/10;
   }
 
   .label {
-    @apply block text-sm font-medium text-foreground/80 mb-2;
+    @apply block text-sm font-semibold text-foreground/90 mb-2;
   }
 }
 
@@ -179,11 +251,18 @@ button:focus-visible {
 
 /* Section wrapper */
 .ai-recommendations-section {
-  background: hsl(var(--card));
-  border: 1px solid hsl(var(--border));
-  border-radius: 1.25rem;
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid hsl(var(--border) / 0.8);
+  border-radius: 1.5rem;
   overflow: hidden;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+}
+
+.dark .ai-recommendations-section {
+  background: rgba(15, 23, 42, 0.45);
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
 /* Header with gradient accent */
@@ -288,15 +367,22 @@ button:focus-visible {
 
 /* Recommendation card */
 .rec-card {
-  background: hsl(var(--card));
-  border: 1px solid hsl(var(--border));
-  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid hsl(var(--border) / 0.75);
+  border-radius: 1.25rem;
   padding: 1.25rem 1.5rem;
   border-left: 4px solid transparent;
   transition: all 0.25s ease;
   animation: recSlideIn 0.4s ease forwards;
   opacity: 0;
   transform: translateY(12px);
+}
+
+.dark .rec-card {
+  background: rgba(30, 41, 59, 0.45);
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
 @keyframes recSlideIn {

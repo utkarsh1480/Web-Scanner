@@ -113,19 +113,19 @@ const SiteGrade = ({ data }) => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="relative">
       <main className="container-custom py-8 md:py-12">
-        {/* Hero Section */}
+        {/* Status Header */}
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <h1 className="text-2xl md:text-4xl font-bold mb-4 text-foreground">{t.statusTitle}</h1>
-          <p className="text-base md:text-lg text-muted-foreground mb-6 md:mb-8">{t.statusDescription}</p>
+          <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-foreground dark:text-white mb-4">{t.statusTitle}</h1>
+          <p className="text-base md:text-lg text-foreground/70 dark:text-white/75 mb-6 md:mb-8 max-w-xl mx-auto leading-relaxed">{t.statusDescription}</p>
           <Button 
-            className="btn-primary inline-flex items-center px-6 py-3 text-base md:text-lg"
+            className="bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-bold hover:bg-zinc-800 dark:hover:bg-zinc-100 rounded-full inline-flex items-center px-6 py-3 text-sm transition-all gap-2 shadow-lg"
             onClick={handleHomeClick}
           >
             {t.ctaButton}
             <svg 
-              className="ml-2 h-4 w-4" 
+              className="h-4 w-4" 
               fill="none" 
               viewBox="0 0 24 24" 
               stroke="currentColor"
@@ -135,19 +135,19 @@ const SiteGrade = ({ data }) => {
           </Button>
         </div>
 
-        {/* Website Preview */}
-        <div className="card overflow-hidden p-0 mb-12 max-w-4xl mx-auto border border-border shadow-lg rounded-lg">
-          <div className="browser-header flex items-center space-x-2 p-3 bg-muted/50 border-b border-border">
+        {/* Website Preview Browser Mock */}
+        <div className="bg-white/30 dark:bg-zinc-950/30 border border-white/50 dark:border-zinc-800/30 backdrop-blur-xl rounded-[2.5rem] overflow-hidden mb-12 max-w-4xl mx-auto shadow-2xl">
+          <div className="browser-header flex items-center space-x-2 p-3 bg-zinc-100/40 dark:bg-zinc-900/40 border-b border-white/10">
             <div className="flex space-x-1.5">
               <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
               <div className="w-3 h-3 rounded-full bg-yellow-500/80"></div>
               <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
             </div>
-            <div className="flex-1 text-center text-xs text-muted-foreground font-mono truncate px-4">
+            <div className="flex-1 text-center text-xs text-foreground/60 dark:text-white/60 font-mono truncate px-4">
               {data.url}
             </div>
           </div>
-          <div className="aspect-video w-full bg-muted/20 relative">
+          <div className="aspect-video w-full bg-zinc-100/10 dark:bg-black/10 relative">
             {data.screenshot ? (
               <img
                 src={data.screenshot}
@@ -155,7 +155,7 @@ const SiteGrade = ({ data }) => {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="flex items-center justify-center h-full text-muted-foreground">
+              <div className="flex items-center justify-center h-full text-foreground/60 dark:text-white/60 font-semibold">
                 No Preview Available
               </div>
             )}
