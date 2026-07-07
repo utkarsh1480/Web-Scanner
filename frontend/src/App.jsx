@@ -15,11 +15,20 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useTheme } from "./Context/ThemeContext";
+import { useAuth } from "./Context/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Login from "./Pages/Login";
+import Register from "./Pages/Register";
+import ForgotPassword from "./Pages/ForgotPassword";
+import ResetPassword from "./Pages/ResetPassword";
+import Profile from "./Pages/Profile";
+
 
 function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { language, setLanguage, t } = useLanguage();
   const { theme, toggleTheme } = useTheme();
+  const { user, logout } = useAuth();
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -63,6 +72,23 @@ function App() {
               >
                 {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
+
+              {user ? (
+                <div className="flex items-center space-x-4 border-l pl-6 border-border">
+                  <Link to="/profile" className="flex items-center gap-2 hover:opacity-85 transition-opacity">
+                    <img src={user.avatar} alt="Avatar" className="w-8 h-8 rounded-full border border-primary/20 object-cover" />
+                    <span className="text-sm font-semibold max-w-[100px] truncate text-foreground">{user.username}</span>
+                  </Link>
+                  <button onClick={logout} className="btn-secondary text-xs px-3.5 py-2.5 rounded-xl">
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-center space-x-3 border-l pl-6 border-border">
+                  <Link to="/login" className="text-sm font-semibold hover:text-primary transition-colors text-foreground">Sign In</Link>
+                  <Link to="/register" className="btn-primary text-xs px-4 py-2.5 rounded-xl">Sign Up</Link>
+                </div>
+              )}
             </div>
 
             {/* Mobile menu button */}
@@ -110,6 +136,23 @@ function App() {
                 {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
                 {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
               </button>
+
+              {user ? (
+                <div className="pt-4 border-t border-border space-y-3">
+                  <Link to="/profile" className="flex items-center gap-2 px-2 hover:opacity-85 transition-opacity" onClick={() => setIsMobileMenuOpen(false)}>
+                    <img src={user.avatar} alt="Avatar" className="w-8 h-8 rounded-full border border-primary/20 object-cover" />
+                    <span className="text-sm font-semibold text-foreground">{user.username}</span>
+                  </Link>
+                  <button onClick={() => { logout(); setIsMobileMenuOpen(false); }} className="w-full text-left py-2 px-2 text-destructive font-medium hover:bg-destructive/5 rounded-lg transition-colors">
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <div className="pt-4 border-t border-border flex flex-col gap-2">
+                  <Link to="/login" className="w-full text-center py-2 px-4 rounded-xl border border-border hover:bg-secondary/20 transition-colors text-foreground font-semibold text-sm" onClick={() => setIsMobileMenuOpen(false)}>Sign In</Link>
+                  <Link to="/register" className="w-full text-center py-2.5 px-4 rounded-xl btn-primary text-sm" onClick={() => setIsMobileMenuOpen(false)}>Sign Up</Link>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -119,12 +162,19 @@ function App() {
       <main className="flex-grow">
         <Routes>
           <Route path="/" element={<WebsiteGrader />} />
-          <Route path="/lighthouse" element={<Lighthouse />} />
-          <Route path="/github/dashboard" element={<GitHubScan />} />
-          <Route path="/cms" element={<Services />} />
-          <Route path="/contact" element={<Contact />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
+          
+          <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route path="/lighthouse" element={<ProtectedRoute><Lighthouse /></ProtectedRoute>} />
+          <Route path="/github/dashboard" element={<ProtectedRoute><GitHubScan /></ProtectedRoute>} />
+          <Route path="/cms" element={<ProtectedRoute><Services /></ProtectedRoute>} />
+          <Route path="/contact" element={<ProtectedRoute><Contact /></ProtectedRoute>} />
         </Routes>
       </main>
+
 
       {/* Footer */}
       <footer className="bg-card/80 backdrop-blur-lg border-t border-border">

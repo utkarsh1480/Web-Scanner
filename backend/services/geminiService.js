@@ -57,10 +57,14 @@ export async function generateCodeReview(fileContents, repoName) {
         return { performance: [], seo: [], accessibility: [], bestPractices: [], security: [] };
     }
 
+    if (!process.env.GEMINI_API_KEY) {
+        throw new Error('GEMINI_API_KEY is not configured. Please add a valid API key to your .env file.');
+    }
+
     try {
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
         const model = genAI.getGenerativeModel({
-            model: "gemini-2.5-pro", // use pro for large context
+            model: "gemini-2.5-flash", // use flash for large context (faster & lower quota)
             generationConfig: {
                 responseMimeType: "application/json",
                 responseSchema: {
@@ -162,7 +166,11 @@ For each issue, cite the specific file, explain the issue, provide a solution, a
         return JSON.parse(responseText);
 
     } catch (error) {
-        console.error('Error generating AI code review:', error);
-        throw new Error('Failed to generate AI code review');
+        console.error('Error generating AI code review:', error.message || error);
+        // Provide a more descriptive error message
+        if (error.message?.includes('API_KEY_INVALID') || error.message?.includes('401') || error.message?.includes('403')) {
+            throw new Error('Invalid Gemini API Key. Please check your GEMINI_API_KEY in the .env file.');
+        }
+        throw new Error(error.message || 'Failed to generate AI code review');
     }
 }

@@ -42,3 +42,51 @@ export async function logoutGitHub() {
     const response = await axios.post(`${API_BASE}/api/github/logout`);
     return response.data;
 }
+
+// User Authentication API calls
+export async function registerUser(username, email, password) {
+    const response = await axios.post(`${API_BASE}/api/auth/register`, { username, email, password });
+    return response.data;
+}
+
+export async function loginUser(email, password) {
+    const response = await axios.post(`${API_BASE}/api/auth/login`, { email, password });
+    return response.data;
+}
+
+export async function logoutUser() {
+    const response = await axios.post(`${API_BASE}/api/auth/logout`);
+    return response.data;
+}
+
+export async function forgotPassword(email) {
+    const response = await axios.post(`${API_BASE}/api/auth/forgot-password`, { email });
+    return response.data;
+}
+
+export async function resetPassword(token, password) {
+    const response = await axios.post(`${API_BASE}/api/auth/reset-password/${token}`, { password });
+    return response.data;
+}
+
+export async function getCurrentUser() {
+    const response = await axios.get(`${API_BASE}/api/auth/currentUser`);
+    return response.data.user;
+}
+
+export async function updateProfile(username) {
+    const response = await axios.put(`${API_BASE}/api/auth/update-profile`, { username });
+    return response.data;
+}
+
+export async function uploadAvatar(file) {
+    const formData = new FormData();
+    formData.append('avatar', file);
+    const response = await axios.post(`${API_BASE}/api/auth/upload-avatar`, formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    });
+    return response.data;
+}
+

@@ -9,6 +9,7 @@ import PerformanceWrapper from "./components/PerformanceWrapper .jsx";
 import Contact from "./components/Contact.jsx";
 import { LanguageProvider } from "./Context/LanguageContext.jsx";
 import { ThemeProvider } from "./Context/ThemeContext.jsx";
+import { AuthProvider } from "./Context/AuthContext.jsx";
 
 // import PerformanceCard from "./components/PerformanceCard.jsx";
 const router = createBrowserRouter([
@@ -20,13 +21,14 @@ const router = createBrowserRouter([
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <ThemeProvider>
-      <PageSpeedProvider>
-        <LanguageProvider>
-          <RouterProvider router={router} />
-          {/* <PerformanceWrapper /> */}
-        </LanguageProvider>
-      </PageSpeedProvider>
+      <AuthProvider>
+        <PageSpeedProvider>
+          <LanguageProvider>
+            <RouterProvider router={router} />
+            {/* <PerformanceWrapper /> */}
+          </LanguageProvider>
+        </PageSpeedProvider>
+      </AuthProvider>
     </ThemeProvider>
   </StrictMode>
-
 );
