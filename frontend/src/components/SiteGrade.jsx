@@ -120,7 +120,7 @@ const SiteGrade = ({ data }) => {
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-foreground dark:text-white mb-4">{t.statusTitle}</h1>
           <p className="text-base md:text-lg text-foreground/70 dark:text-white/75 mb-6 md:mb-8 max-w-xl mx-auto leading-relaxed">{t.statusDescription}</p>
           <Button 
-            className="bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-bold hover:bg-zinc-800 dark:hover:bg-zinc-100 rounded-full inline-flex items-center px-6 py-3 text-sm transition-all gap-2 shadow-lg"
+            className="bg-[#ff4f22] text-white font-bold hover:bg-[#e03b12] rounded-full inline-flex items-center px-6 py-3 text-sm transition-all gap-2 shadow-lg border-none"
             onClick={handleHomeClick}
           >
             {t.ctaButton}
@@ -136,8 +136,8 @@ const SiteGrade = ({ data }) => {
         </div>
 
         {/* Website Preview Browser Mock */}
-        <div className="bg-white/30 dark:bg-zinc-950/30 border border-white/50 dark:border-zinc-800/30 backdrop-blur-xl rounded-[2.5rem] overflow-hidden mb-12 max-w-4xl mx-auto shadow-2xl">
-          <div className="browser-header flex items-center space-x-2 p-3 bg-zinc-100/40 dark:bg-zinc-900/40 border-b border-white/10">
+        <div className="bg-white dark:bg-zinc-950 border border-slate-200/80 dark:border-zinc-800/80 rounded-[1.75rem] overflow-hidden mb-12 max-w-4xl mx-auto shadow-2xl">
+          <div className="browser-header flex items-center space-x-2 p-3 bg-slate-50 dark:bg-zinc-900 border-b border-slate-200/50 dark:border-zinc-800/50">
             <div className="flex space-x-1.5">
               <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
               <div className="w-3 h-3 rounded-full bg-yellow-500/80"></div>

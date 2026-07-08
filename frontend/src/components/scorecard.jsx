@@ -65,7 +65,7 @@ import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card"
 
 const ScoreCard = ({ url, scores }) => {
   return (
-    <Card className="bg-white/30 dark:bg-zinc-950/30 border border-white/50 dark:border-zinc-800/30 backdrop-blur-xl rounded-[2.5rem] p-6 shadow-xl text-foreground dark:text-white">
+    <Card className="bg-white dark:bg-zinc-950 border border-slate-200/80 dark:border-zinc-800/80 rounded-[1.75rem] p-6 shadow-xl text-foreground dark:text-white">
       <CardHeader className="flex flex-col items-center pb-4">
         {/* Concentric Tech Circle Design */}
         <div className="relative flex items-center justify-center rounded-full w-24 h-24 bg-zinc-100/60 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800">
@@ -99,9 +99,9 @@ const ScoreCard = ({ url, scores }) => {
         </div>
       </CardContent>
       
-      <CardFooter className="flex flex-col items-center space-y-3 pt-4 border-t border-white/10">
+      <CardFooter className="flex flex-col items-center space-y-3 pt-4 border-t border-slate-100 dark:border-zinc-800/60">
         <p className="text-center text-xs font-semibold text-foreground/60 dark:text-white/60">Is your website slowing you down?</p>
-        <button className="bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-bold hover:bg-zinc-800 dark:hover:bg-zinc-100 rounded-full w-full h-11 text-xs transition-all shadow-md">
+        <button className="bg-[#ff4f22] text-white font-bold hover:bg-[#e03b12] rounded-full w-full h-11 text-xs transition-all shadow-md">
           Get the Free CMS
         </button>
         <p className="text-[10px] font-semibold text-foreground/40 dark:text-white/40">No credit card needed</p>

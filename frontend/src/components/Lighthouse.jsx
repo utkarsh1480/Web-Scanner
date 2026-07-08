@@ -52,7 +52,7 @@ const Lighthouse = () => {
       <div className="container-custom px-4 py-6 flex items-center justify-between">
         <button
           onClick={() => navigate('/')}
-          className="bg-white/30 dark:bg-zinc-900/30 border border-white/50 dark:border-zinc-800/30 backdrop-blur-md hover:bg-white/50 dark:hover:bg-zinc-900/50 flex items-center gap-2 text-xs font-bold h-10 px-5 rounded-full transition-all text-foreground dark:text-white shadow-sm"
+          className="bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800/80 hover:border-slate-300 dark:hover:border-zinc-700 flex items-center gap-2 text-xs font-bold h-10 px-5 rounded-full transition-all text-slate-800 dark:text-white shadow-sm"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>{t.lighthouseBackShort}</span>
@@ -63,7 +63,7 @@ const Lighthouse = () => {
       <main className="container-custom py-6 sm:py-10 px-4">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
-          {/* Left Panel (7 Cols) */}
+          {/* Left Panel (5 Cols) */}
           <div className="lg:col-span-5 space-y-8">
             {/* URL Display */}
             <div className="space-y-2">
@@ -77,7 +77,7 @@ const Lighthouse = () => {
             </div>
 
             {/* Contact Links */}
-            <Card className="bg-white/30 dark:bg-zinc-950/30 border border-white/50 dark:border-zinc-800/30 backdrop-blur-xl rounded-[2.5rem] p-6 shadow-xl">
+            <Card className="bg-white dark:bg-zinc-950 border border-slate-200/80 dark:border-zinc-800/80 rounded-[1.75rem] p-6 shadow-xl">
               <CardHeader className="p-0 pb-4">
                 <CardTitle className="text-base font-bold text-center text-foreground dark:text-white">{t.lighthouseContactMe}</CardTitle>
               </CardHeader>
@@ -85,14 +85,14 @@ const Lighthouse = () => {
                 <div className="flex justify-center space-x-6">
                   <a
                     href="mailto:utkarsh1480759@gmail.com"
-                    className="text-foreground/70 dark:text-white/70 hover:text-foreground dark:hover:text-white transition-colors p-3 bg-white/20 dark:bg-black/20 rounded-2xl"
+                    className="text-slate-600 dark:text-white/70 hover:text-[#ff4f22] dark:hover:text-[#ff4f22] transition-colors p-3 bg-slate-50 dark:bg-zinc-900 rounded-2xl border border-slate-100 dark:border-zinc-800"
                     aria-label="Email"
                   >
                     <Mail className="w-5 h-5" />
                   </a>
                   <a
                     href="tel:+919628300323"
-                    className="text-foreground/70 dark:text-white/70 hover:text-foreground dark:hover:text-white transition-colors p-3 bg-white/20 dark:bg-black/20 rounded-2xl"
+                    className="text-slate-600 dark:text-white/70 hover:text-[#ff4f22] dark:hover:text-[#ff4f22] transition-colors p-3 bg-slate-50 dark:bg-zinc-900 rounded-2xl border border-slate-100 dark:border-zinc-800"
                     aria-label="Phone"
                   >
                     <Phone className="w-5 h-5" />
@@ -101,7 +101,7 @@ const Lighthouse = () => {
                     href="https://x.com/UTKARSH68694578"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-foreground/70 dark:text-white/70 hover:text-foreground dark:hover:text-white transition-colors p-3 bg-white/20 dark:bg-black/20 rounded-2xl"
+                    className="text-slate-600 dark:text-white/70 hover:text-[#ff4f22] dark:hover:text-[#ff4f22] transition-colors p-3 bg-slate-50 dark:bg-zinc-900 rounded-2xl border border-slate-100 dark:border-zinc-800"
                     aria-label="Twitter"
                   >
                     <Twitter className="w-5 h-5" />
@@ -111,13 +111,13 @@ const Lighthouse = () => {
             </Card>
           </div>
 
-          {/* Right Panel (5 Cols) */}
+          {/* Right Panel (7 Cols) */}
           <div className="lg:col-span-7 space-y-8">
             {/* Aggregate Score Card */}
-            <Card className="bg-white/30 dark:bg-zinc-950/30 border border-white/50 dark:border-zinc-800/30 backdrop-blur-xl rounded-[2.5rem] p-6 shadow-xl">
+            <Card className="bg-white dark:bg-zinc-950 border border-slate-200/80 dark:border-zinc-800/80 rounded-[1.75rem] p-6 shadow-xl">
               <CardHeader className="p-0 pb-5">
                 <CardTitle className="flex items-center gap-2 text-lg font-bold text-foreground dark:text-white">
-                  <BarChart2 className="w-5 h-5 text-foreground dark:text-white" />
+                  <BarChart2 className="w-5 h-5 text-slate-800 dark:text-white" />
                   {t.lighthouseOverallScore}
                 </CardTitle>
               </CardHeader>
@@ -161,7 +161,7 @@ const Lighthouse = () => {
             {/* Detailed Scores list */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {details.map((item, index) => (
-                <div key={index} className="bg-white/30 dark:bg-zinc-950/30 border border-white/50 dark:border-zinc-800/30 backdrop-blur-xl rounded-[2.5rem] p-6 shadow-md hover:scale-[1.02] transition-transform duration-300">
+                <div key={index} className="bg-white dark:bg-zinc-950 border border-slate-200/80 dark:border-zinc-800/80 rounded-[1.75rem] p-6 shadow-md hover:scale-[1.02] transition-transform duration-300">
                   <div className="p-0 pb-3 flex flex-row items-center gap-2.5">
                     <div className="p-1.5 rounded-lg bg-zinc-100/60 dark:bg-zinc-900/60">
                       {item.label === 'Performance' && <Zap className="w-4 h-4 text-amber-500" />}
