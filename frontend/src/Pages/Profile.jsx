@@ -58,8 +58,8 @@ const Profile = () => {
             return;
         }
 
-        if (file.size > 5 * 1024 * 1024) {
-            setErrorMessage('File size must be less than 5MB.');
+        if (file.size > 3 * 1024 * 1024) {
+            setErrorMessage('File size must be less than 3MB.');
             return;
         }
 

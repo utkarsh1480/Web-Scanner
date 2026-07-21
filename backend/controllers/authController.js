@@ -198,23 +198,29 @@ export const updateProfile = async (req, res) => {
 // POST /api/auth/upload-avatar
 export const uploadAvatar = async (req, res) => {
     try {
-        if (!req.file) {
-            return res.status(400).json({ message: "Please upload an image file" });
+        const { avatar } = req.body;
+
+        if (!avatar || !avatar.startsWith('data:image/')) {
+            return res.status(400).json({ message: "Please upload a valid image file" });
         }
+
+        // Validate size — base64 string of a 3MB image is ~4MB
+        const sizeInBytes = Buffer.byteLength(avatar, 'utf8');
+        if (sizeInBytes > 4 * 1024 * 1024) {
+            return res.status(400).json({ message: "Image is too large. Please use an image under 3MB." });
+        }
+
         const user = await User.findById(req.user._id);
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
-        
-        // Convert the file buffer to a base64 Data URI
-        const base64Image = req.file.buffer.toString('base64');
-        const avatarUrl = `data:${req.file.mimetype};base64,${base64Image}`;
-        user.avatar = avatarUrl;
+
+        user.avatar = avatar;
         await user.save();
 
         res.status(200).json({
             message: "Avatar uploaded successfully",
-            avatar: avatarUrl,
+            avatar: avatar,
             user: { id: user._id, username: user.username, email: user.email, avatar: user.avatar }
         });
     } catch (error) {

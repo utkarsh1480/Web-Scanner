@@ -80,13 +80,22 @@ export async function updateProfile(username) {
 }
 
 export async function uploadAvatar(file) {
-    const formData = new FormData();
-    formData.append('avatar', file);
-    const response = await axios.post(`${API_BASE}/api/auth/upload-avatar`, formData, {
-        headers: {
-            'Content-Type': 'multipart/form-data'
-        }
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = async () => {
+            try {
+                const base64 = reader.result; // data:image/jpeg;base64,...
+                const response = await axios.post(`${API_BASE}/api/auth/upload-avatar`,
+                    { avatar: base64 },
+                    { headers: { 'Content-Type': 'application/json' } }
+                );
+                resolve(response.data);
+            } catch (err) {
+                reject(err);
+            }
+        };
+        reader.onerror = () => reject(new Error('Failed to read file'));
+        reader.readAsDataURL(file);
     });
-    return response.data;
 }
 

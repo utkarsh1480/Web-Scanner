@@ -10,28 +10,8 @@ import {
     uploadAvatar
 } from '../controllers/authController.js';
 import { requireUserAuth } from '../middleware/authMiddleware.js';
-import multer from 'multer';
-import path from 'path';
 
 const authRouter = express.Router();
-
-// Multer storage setup (uses memory storage for Vercel/serverless compatibility)
-const storage = multer.memoryStorage();
-
-const upload = multer({
-    storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max
-    fileFilter: (req, file, cb) => {
-        const allowedTypes = /jpeg|jpg|png|webp/;
-        const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-        const mimetype = allowedTypes.test(file.mimetype);
-        if (extname && mimetype) {
-            return cb(null, true);
-        }
-        cb(new Error('Only image files (jpg, jpeg, png, webp) are allowed'));
-    }
-});
-
 
 
 /**
@@ -80,6 +60,6 @@ authRouter.put('/update-profile', requireUserAuth, updateProfile);
  * @route   POST /api/auth/upload-avatar
  * @desc    Upload profile avatar picture
  */
-authRouter.post('/upload-avatar', requireUserAuth, upload.single('avatar'), uploadAvatar);
+authRouter.post('/upload-avatar', requireUserAuth, uploadAvatar);
 
 export default authRouter;
