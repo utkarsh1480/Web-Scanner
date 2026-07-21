@@ -206,9 +206,9 @@ export const uploadAvatar = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
         
-        // Generate static avatar URL
-        const baseUrl = process.env.BACKEND_URL || `${req.protocol}://${req.get('host')}`;
-        const avatarUrl = `${baseUrl}/uploads/${req.file.filename}`;
+        // Convert the file buffer to a base64 Data URI
+        const base64Image = req.file.buffer.toString('base64');
+        const avatarUrl = `data:${req.file.mimetype};base64,${base64Image}`;
         user.avatar = avatarUrl;
         await user.save();
 
