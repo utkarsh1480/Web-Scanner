@@ -115,7 +115,8 @@ export const forgotPassword = async (req, res) => {
         await user.save();
 
         // In production you'd email this link. For now return it directly for testing.
-        const resetUrl = `http://localhost:3000/api/auth/reset-password/${resetToken}`;
+        const baseUrl = process.env.BACKEND_URL || `${req.protocol}://${req.get('host')}`;
+        const resetUrl = `${baseUrl}/api/auth/reset-password/${resetToken}`;
 
         res.status(200).json({
             message: "Password reset token generated",
@@ -206,7 +207,8 @@ export const uploadAvatar = async (req, res) => {
         }
         
         // Generate static avatar URL
-        const avatarUrl = `http://localhost:3000/uploads/${req.file.filename}`;
+        const baseUrl = process.env.BACKEND_URL || `${req.protocol}://${req.get('host')}`;
+        const avatarUrl = `${baseUrl}/uploads/${req.file.filename}`;
         user.avatar = avatarUrl;
         await user.save();
 
