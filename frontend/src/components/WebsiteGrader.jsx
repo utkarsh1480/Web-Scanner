@@ -1,21 +1,20 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import emailjs from '@emailjs/browser';
 import { useNavigate } from 'react-router-dom';
-import { Loader2, Zap, Shield, Search, Sparkles, Flame, Check, ArrowRight } from 'lucide-react';
+import { Loader2, Zap } from 'lucide-react';
 import React from 'react';
 import { useLanguage } from '../Context/LanguageContext';
 
 /* ─────────────────────────────────────────
    Animated visual circle (like Google Ads hero)
-   Shows a rotating ring of feature icons
 ───────────────────────────────────────── */
-const HeroVisual = ({ scanning, scanStep }) => {
+const HeroVisual = ({ scanning, scanStep, t }) => {
   const features = [
-    { label: 'Performance', color: '#fbbc04', bg: '#fff8e1' },
-    { label: 'SEO Score', color: '#4285f4', bg: '#e8f0fe' },
-    { label: 'SSL Secure', color: '#34a853', bg: '#e6f4ea' },
-    { label: 'Accessibility', color: '#9c27b0', bg: '#f3e5f5' },
-    { label: 'Mobile Ready', color: '#ea4335', bg: '#fce8e6' },
+    { label: t.performance || 'Performance', color: '#fbbc04', bg: '#fff8e1' },
+    { label: t.seo || 'SEO Score', color: '#4285f4', bg: '#e8f0fe' },
+    { label: t.security || 'SSL Secure', color: '#34a853', bg: '#e6f4ea' },
+    { label: t.accessibility || 'Accessibility', color: '#9c27b0', bg: '#f3e5f5' },
+    { label: t.mobile || 'Mobile Ready', color: '#ea4335', bg: '#fce8e6' },
     { label: 'Speed Index', color: '#1a73e8', bg: '#e8f0fe' },
   ];
 
@@ -163,7 +162,7 @@ const WebsiteGrader = () => {
   };
 
   const getButtonText = () => {
-    if (!loading) return 'Start now';
+    if (!loading) return t.startNow || 'Start now';
     const steps = ['Auditing Performance…', 'Verifying Lighthouse…', 'Measuring Speed…', 'Analyzing SEO…', 'Checking SSL…', 'Evaluating Accessibility…'];
     return steps[scanStep] || 'Running Audit…';
   };
@@ -174,7 +173,7 @@ const WebsiteGrader = () => {
       <div className="gs-banner">
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <span className="gs-banner-text">
-            <strong>New to Web Scanner?</strong> Get a free performance audit and identify critical issues in seconds.
+            <strong>{t.bannerText?.split('?')[0]}?</strong> {t.bannerText?.split('?')[1] || t.bannerText}
           </span>
         </div>
         <a
@@ -182,7 +181,7 @@ const WebsiteGrader = () => {
           className="gs-banner-cta"
           onClick={e => { e.preventDefault(); document.getElementById('gs-url-input')?.focus(); }}
         >
-          Scan now ↓
+          {t.bannerCta || 'Scan now ↓'}
         </a>
       </div>
 
@@ -193,12 +192,12 @@ const WebsiteGrader = () => {
           {/* LEFT — headline + CTAs */}
           <div className="gs-hero-left">
             <h1 className="gs-hero-headline">
-              <span className="line1">Stand out</span>
-              <span className="line2">with Web Scanner</span>
+              <span className="line1">{t.heroTitleLine1 || 'Stand out'}</span>
+              <span className="line2">{t.heroTitleLine2 || 'with Web Scanner'}</span>
             </h1>
 
             <p className="gs-hero-subtext">
-              Whatever your performance goal, identify slow load times, SEO gaps, security risks, and accessibility issues instantly.
+              {t.heroSubtext || 'Whatever your performance goal, identify slow load times, SEO gaps, security risks, and accessibility issues instantly.'}
             </p>
 
             <div className="gs-hero-ctas">
@@ -207,7 +206,7 @@ const WebsiteGrader = () => {
                 className="gs-cta-primary"
                 onClick={e => { e.preventDefault(); document.getElementById('gs-url-input')?.focus(); }}
               >
-                Start now
+                {t.startNow || 'Start now'}
               </a>
               <a
                 href="#scan-form"
@@ -219,16 +218,16 @@ const WebsiteGrader = () => {
                   <circle cx="7" cy="7" r="6" stroke="#5f6368" strokeWidth="1.2"/>
                   <path d="M5 7l2 2 3-3" stroke="#5f6368" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
-                Run a free audit
+                {t.runFreeAudit || 'Run a free audit'}
               </a>
             </div>
 
             {/* Trust signals */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap', marginTop: '0.5rem' }}>
               {[
-                'Lighthouse powered',
-                'SSL verified',
-                'Real-time results',
+                t.lighthousePowered || 'Lighthouse powered',
+                t.sslVerified || 'SSL verified',
+                t.realTimeResults || 'Real-time results',
               ].map((text) => (
                 <span key={text} style={{ fontSize: '0.8125rem', color: '#5f6368', fontWeight: 500 }}>
                   {text}
@@ -239,7 +238,7 @@ const WebsiteGrader = () => {
 
           {/* RIGHT — visual circle + scanner form */}
           <div className="gs-hero-right">
-            <HeroVisual scanning={loading} scanStep={scanStep} />
+            <HeroVisual scanning={loading} scanStep={scanStep} t={t} />
 
             {/* Scanner form card */}
             <div id="scan-form" className="gs-scanner-card" style={{ marginTop: '1.5rem' }}>
@@ -257,14 +256,14 @@ const WebsiteGrader = () => {
                   }
                 </div>
                 <div>
-                  <p className="gs-scanner-title">Live Auditor Engine</p>
-                  <p className="gs-scanner-sub">Enter details to analyze all core scores</p>
+                  <p className="gs-scanner-title">{t.liveAuditorEngine || 'Live Auditor Engine'}</p>
+                  <p className="gs-scanner-sub">{t.enterDetailsToAnalyze || 'Enter details to analyze all core scores'}</p>
                 </div>
               </div>
 
               <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                 <div>
-                  <label className="gs-field-label" htmlFor="gs-url-input">Website URL</label>
+                  <label className="gs-field-label" htmlFor="gs-url-input">{t.websiteUrlLabel || 'Website URL'}</label>
                   <input
                     id="gs-url-input"
                     type="text"
@@ -277,7 +276,7 @@ const WebsiteGrader = () => {
                   />
                 </div>
                 <div>
-                  <label className="gs-field-label">Email address</label>
+                  <label className="gs-field-label">{t.emailAddressLabel || 'Email address'}</label>
                   <input
                     type="email"
                     value={email}
@@ -300,7 +299,7 @@ const WebsiteGrader = () => {
                   disabled={loading}
                   className="gs-submit-ghost"
                 >
-                  Scan Repository →
+                  {t.scanRepoBtn || 'Scan Repository →'}
                 </button>
               </form>
 
@@ -327,10 +326,10 @@ const WebsiteGrader = () => {
       <div className="gs-stats-bar">
         <div className="gs-stats-inner">
           {[
-            { number: '99/100', label: 'Max performance score' },
-            { number: '< 0.5s', label: 'Average speed index' },
-            { number: 'WCAG', label: 'Accessibility standard' },
-            { number: 'A+', label: 'SSL security rating' },
+            { number: '99/100', label: t.maxPerfScore || 'Max performance score' },
+            { number: '< 0.5s', label: t.avgSpeedIndex || 'Average speed index' },
+            { number: 'WCAG', label: t.wcagStandard || 'Accessibility standard' },
+            { number: 'A+', label: t.sslRating || 'SSL security rating' },
           ].map(({ number, label }) => (
             <div key={label} className="gs-stat-item">
               <div className="gs-stat-number">{number}</div>
@@ -343,19 +342,19 @@ const WebsiteGrader = () => {
       {/* ── FEATURES SECTION ── */}
       <section className="gs-features">
         <div className="gs-features-inner">
-          <p className="gs-section-label">What we audit</p>
+          <p className="gs-section-label">{t.whatWeAudit || 'What we audit'}</p>
           <h2 className="gs-section-title">
-            Everything your website<br />needs to rank and convert
+            {t.featuresMainTitle || 'Everything your website needs to rank and convert'}
           </h2>
 
           <div className="grid-responsive">
             {[
-              { title: 'Performance', desc: 'Core Web Vitals, LCP, FID, CLS and full Lighthouse performance score with actionable tips.' },
-              { title: 'SEO Analysis', desc: 'Meta tags, heading structure, sitemap validation, canonical URLs and search visibility audit.' },
-              { title: 'Security & SSL', desc: 'HTTPS validation, mixed content check, security headers and vulnerability scanning.' },
-              { title: 'Accessibility', desc: 'WCAG 2.1 compliance, ARIA labels, color contrast ratios and keyboard navigation testing.' },
-              { title: 'Mobile Audit', desc: 'Responsive design check, mobile usability score and viewport configuration review.' },
-              { title: 'AI Suggestions', desc: 'Smart recommendations prioritized by impact so you fix what matters most first.' },
+              { title: t.performance || 'Performance', desc: t.performanceDesc || 'Core Web Vitals, LCP, FID, CLS and full Lighthouse performance score with actionable tips.' },
+              { title: t.seo || 'SEO Analysis', desc: t.seoDesc || 'Meta tags, heading structure, sitemap validation, canonical URLs and search visibility audit.' },
+              { title: t.security || 'Security & SSL', desc: t.securityDesc || 'HTTPS validation, mixed content check, security headers and vulnerability scanning.' },
+              { title: t.accessibility || 'Accessibility', desc: t.accessibilityDesc || 'WCAG 2.1 compliance, ARIA labels, color contrast ratios and keyboard navigation testing.' },
+              { title: t.mobile || 'Mobile Audit', desc: t.mobileDesc || 'Responsive design check, mobile usability score and viewport configuration review.' },
+              { title: t.aiSuggestions || 'AI Suggestions', desc: t.aiSuggestionsDesc || 'Smart recommendations prioritized by impact so you fix what matters most first.' },
             ].map(({ title, desc }) => (
               <div key={title} className="gs-feature-card">
                 <div className="gs-feature-title">{title}</div>
