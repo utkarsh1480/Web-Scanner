@@ -7,10 +7,21 @@ const IGNORED_PATHS = ['node_modules', 'dist', 'build', '.git', 'package-lock.js
 /**
  * Checks if a file path should be analyzed
  */
-const shouldAnalyzeFile = (path) => {
+/**
+ * Checks if a file path should be analyzed and matches optional targetFolder filter
+ */
+const shouldAnalyzeFile = (path, targetFolder) => {
     // Check if it's in an ignored directory
     if (IGNORED_PATHS.some(ignored => path.includes(`${ignored}/`) || path === ignored)) {
         return false;
+    }
+
+    // Check target folder filter
+    if (targetFolder && targetFolder.trim() !== '') {
+        const cleanFolder = targetFolder.trim().replace(/^\/+|\/+$/g, '');
+        if (!path.startsWith(`${cleanFolder}/`) && path !== cleanFolder) {
+            return false;
+        }
     }
 
     // Check extension
@@ -66,23 +77,25 @@ const getFileContent = async (owner, repo, fileSha, token) => {
 };
 
 /**
- * Analyzes the repository source code
+ * Analyzes the repository source code (or a specific folder)
  */
-export const analyzeRepository = async (repoFullName, defaultBranch, token) => {
+export const analyzeRepository = async (repoFullName, defaultBranch, token, targetFolder = null) => {
     const [owner, repo] = repoFullName.split('/');
     
     // 1. Get the full tree
     const tree = await getRepositoryTree(owner, repo, defaultBranch, token);
 
-    // 2. Filter for files we care about
-    const relevantFiles = tree.filter(item => item.type === 'blob' && shouldAnalyzeFile(item.path));
+    // 2. Filter for files we care about (and optionally match target folder)
+    const relevantFiles = tree.filter(item => item.type === 'blob' && shouldAnalyzeFile(item.path, targetFolder));
 
     if (relevantFiles.length === 0) {
+        if (targetFolder) {
+            throw new Error(`No supported files found to analyze in the folder "${targetFolder}".`);
+        }
         throw new Error('No supported files found to analyze in this repository.');
     }
 
-    // To prevent hitting rate limits or creating massive prompts, 
-    // let's limit to the first 20 relevant files for now (Phase 2 MVP)
+    // Limit to 20 relevant files per scan session
     const filesToAnalyze = relevantFiles.slice(0, 20);
 
     // 3. Fetch contents for each file
@@ -95,7 +108,8 @@ export const analyzeRepository = async (repoFullName, defaultBranch, token) => {
     }
 
     // 4. Send to AI for Code Review
-    const analysisResults = await generateCodeReview(fileContents, repoFullName);
+    const contextLabel = targetFolder ? `${repoFullName} (Folder: ${targetFolder})` : repoFullName;
+    const analysisResults = await generateCodeReview(fileContents, contextLabel);
 
     return analysisResults;
 };

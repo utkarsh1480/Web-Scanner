@@ -3,6 +3,7 @@ import { getGitHubRepositories, checkGitHubAuth, logoutGitHub } from '../../serv
 import RepositoryCard from './RepositoryCard';
 import GitHubLogin from './GitHubLogin';
 import LoadingSpinner from '../LoadingSpinner';
+import ScanTypeModal from './ScanTypeModal';
 import { Search } from 'lucide-react';
 
 const RepositoryList = ({ onSelectRepo }) => {
@@ -12,6 +13,7 @@ const RepositoryList = ({ onSelectRepo }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [modalRepo, setModalRepo] = useState(null);
 
     useEffect(() => {
         const checkAuthAndFetchRepos = async () => {
@@ -57,6 +59,12 @@ const RepositoryList = ({ onSelectRepo }) => {
         }
     };
 
+    const handleConfirmScan = (scanConfig) => {
+        if (modalRepo) {
+            onSelectRepo(modalRepo, scanConfig);
+            setModalRepo(null);
+        }
+    };
 
     if (isLoading) {
         return (
@@ -75,7 +83,7 @@ const RepositoryList = ({ onSelectRepo }) => {
             <div className="flex flex-col md:flex-row justify-between md:items-end gap-4">
                 <div>
                     <h2 className="text-2xl font-bold">Your Repositories</h2>
-                    <p className="text-muted-foreground">Select a repository to perform a deep AI code review.</p>
+                    <p className="text-muted-foreground">Click any repository to launch a full or folder-wise AI code audit.</p>
                 </div>
                 
                 <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
@@ -112,7 +120,7 @@ const RepositoryList = ({ onSelectRepo }) => {
                         <RepositoryCard 
                             key={repo.id} 
                             repo={repo} 
-                            onSelect={onSelectRepo} 
+                            onSelect={(selected) => setModalRepo(selected)} 
                         />
                     ))}
                 </div>
@@ -121,6 +129,14 @@ const RepositoryList = ({ onSelectRepo }) => {
                     {searchQuery ? 'No repositories match your search.' : 'No repositories found.'}
                 </div>
             )}
+
+            {/* Scan Type Selection Modal */}
+            <ScanTypeModal
+                repo={modalRepo}
+                isOpen={!!modalRepo}
+                onClose={() => setModalRepo(null)}
+                onConfirm={handleConfirmScan}
+            />
         </div>
     );
 };

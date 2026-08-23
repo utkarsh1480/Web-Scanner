@@ -1,174 +1,170 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../Context/AuthContext';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Lock, Mail, User, Eye, EyeOff, Loader2 } from 'lucide-react';
 
+const LogoDots = () => (
+  <div style={{ display: 'flex', gap: '2px' }}>
+    <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#4285f4', display: 'block' }} />
+    <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#ea4335', display: 'block' }} />
+    <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#fbbc04', display: 'block' }} />
+    <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#34a853', display: 'block' }} />
+  </div>
+);
+
 const Register = () => {
-    const { register } = useAuth();
-    const navigate = useNavigate();
+  const { register } = useAuth();
+  const navigate = useNavigate();
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formError, setFormError] = useState('');
 
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [formError, setFormError] = useState('');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setFormError('');
+    if (!username.trim() || !email.trim() || !password.trim()) {
+      setFormError('All fields are required.'); return;
+    }
+    if (password.length < 8) {
+      setFormError('Password must be at least 8 characters.'); return;
+    }
+    if (password !== confirmPassword) {
+      setFormError('Passwords do not match.'); return;
+    }
+    setIsSubmitting(true);
+    try {
+      await register(username, email, password);
+      navigate('/');
+    } catch (err) {
+      setFormError(err.message || 'Registration failed. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setFormError('');
+  const iconStyle = {
+    position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)',
+    color: '#9aa0a6', pointerEvents: 'none',
+  };
 
-        if (!username.trim() || !email.trim() || !password.trim()) {
-            setFormError('All fields are required.');
-            return;
-        }
+  return (
+    <div className="gs-auth-page">
+      <div className="gs-auth-card">
+        {/* Logo */}
+        <Link to="/" className="gs-auth-logo">
+          <LogoDots />
+          <span className="gs-auth-logo-text">Web Scanner</span>
+        </Link>
 
-        if (password.length < 8) {
-            setFormError('Password must be at least 8 characters long.');
-            return;
-        }
+        <h1 className="gs-auth-title">Create account</h1>
+        <p className="gs-auth-subtitle">to get started with Web Scanner</p>
 
-        if (password !== confirmPassword) {
-            setFormError('Passwords do not match.');
-            return;
-        }
+        {formError && <div className="gs-auth-error">{formError}</div>}
 
-        setIsSubmitting(true);
-        try {
-            await register(username, email, password);
-            navigate('/');
-        } catch (err) {
-            setFormError(err.message || 'Registration failed. Please try again.');
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
+        <form onSubmit={handleSubmit}>
+          {/* Username */}
+          <div className="gs-auth-field">
+            <label className="gs-auth-label" htmlFor="reg-username">Username</label>
+            <div style={{ position: 'relative' }}>
+              <User size={16} style={iconStyle} />
+              <input
+                id="reg-username"
+                type="text"
+                value={username}
+                onChange={e => setUsername(e.target.value)}
+                placeholder="Choose a username"
+                className="gs-auth-input"
+                style={{ paddingLeft: '2.375rem' }}
+                required
+                disabled={isSubmitting}
+                autoComplete="username"
+              />
+            </div>
+          </div>
 
-    return (
-        <div className="min-h-[80vh] flex items-center justify-center px-4 py-12 bg-gradient-to-br from-background via-background/95 to-primary/5">
-            <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]"></div>
-            
-            <Card className="w-full max-w-md bg-card/60 backdrop-blur-xl border border-border/80 shadow-2xl shadow-primary/5">
-                <CardHeader className="space-y-2 text-center pb-6">
-                    <CardTitle className="text-3xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">
-                        Create Account
-                    </CardTitle>
-                    <CardDescription className="text-muted-foreground text-sm font-medium">
-                        Get started by registering a new account.
-                    </CardDescription>
-                </CardHeader>
-                
-                <form onSubmit={handleSubmit}>
-                    <CardContent className="space-y-4">
-                        {formError && (
-                            <div className="p-3.5 rounded-lg border border-destructive/20 bg-destructive/10 text-destructive text-sm font-medium animate-in fade-in duration-300">
-                                {formError}
-                            </div>
-                        )}
-                        
-                        <div className="space-y-1.5">
-                            <Label htmlFor="username" className="text-sm font-medium">Username</Label>
-                            <div className="relative">
-                                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                                <Input
-                                    id="username"
-                                    type="text"
-                                    placeholder="yourusername"
-                                    className="pl-10 bg-background/50 border-border/85"
-                                    value={username}
-                                    onChange={(e) => setUsername(e.target.value)}
-                                    required
-                                />
-                            </div>
-                        </div>
+          {/* Email */}
+          <div className="gs-auth-field">
+            <label className="gs-auth-label" htmlFor="reg-email">Email address</label>
+            <div style={{ position: 'relative' }}>
+              <Mail size={16} style={iconStyle} />
+              <input
+                id="reg-email"
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="Enter your email"
+                className="gs-auth-input"
+                style={{ paddingLeft: '2.375rem' }}
+                required
+                disabled={isSubmitting}
+                autoComplete="email"
+              />
+            </div>
+          </div>
 
-                        <div className="space-y-1.5">
-                            <Label htmlFor="email" className="text-sm font-medium">Email Address</Label>
-                            <div className="relative">
-                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    placeholder="name@example.com"
-                                    className="pl-10 bg-background/50 border-border/85"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    required
-                                />
-                            </div>
-                        </div>
-                        
-                        <div className="space-y-1.5">
-                            <Label htmlFor="password" className="text-sm font-medium">Password</Label>
-                            <div className="relative">
-                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                                <Input
-                                    id="password"
-                                    type={showPassword ? 'text' : 'password'}
-                                    placeholder="At least 8 characters"
-                                    className="pl-10 pr-10 bg-background/50 border-border/85"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    required
-                                />
-                                <button
-                                    type="button"
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                >
-                                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                                </button>
-                            </div>
-                        </div>
+          {/* Password */}
+          <div className="gs-auth-field">
+            <label className="gs-auth-label" htmlFor="reg-password">Password</label>
+            <div style={{ position: 'relative' }}>
+              <Lock size={16} style={iconStyle} />
+              <input
+                id="reg-password"
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                placeholder="At least 8 characters"
+                className="gs-auth-input"
+                style={{ paddingLeft: '2.375rem', paddingRight: '2.75rem' }}
+                required
+                disabled={isSubmitting}
+              />
+              <button type="button" onClick={() => setShowPassword(!showPassword)}
+                style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', padding: 0, color: '#9aa0a6', cursor: 'pointer', display: 'flex' }}>
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
+          </div>
 
-                        <div className="space-y-1.5">
-                            <Label htmlFor="confirmPassword" className="text-sm font-medium">Confirm Password</Label>
-                            <div className="relative">
-                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                                <Input
-                                    id="confirmPassword"
-                                    type={showPassword ? 'text' : 'password'}
-                                    placeholder="Repeat password"
-                                    className="pl-10 pr-10 bg-background/50 border-border/85"
-                                    value={confirmPassword}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
-                                    required
-                                />
-                            </div>
-                        </div>
-                    </CardContent>
-                    
-                    <CardFooter className="flex flex-col space-y-4 pt-4">
-                        <Button 
-                            type="submit" 
-                            className="w-full h-11 text-sm font-medium transition-all shadow-lg hover:shadow-primary/20"
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting ? (
-                                <span className="flex items-center justify-center gap-2">
-                                    <Loader2 className="h-4 w-4 animate-spin" /> Creating Account...
-                                </span>
-                            ) : (
-                                'Sign Up'
-                            )}
-                        </Button>
-                        
-                        <div className="text-center text-xs text-muted-foreground font-medium">
-                            Already have an account?{' '}
-                            <Link to="/login" className="text-primary hover:underline font-semibold">
-                                Sign In
-                            </Link>
-                        </div>
-                    </CardFooter>
-                </form>
-            </Card>
-        </div>
-    );
+          {/* Confirm password */}
+          <div className="gs-auth-field">
+            <label className="gs-auth-label" htmlFor="reg-confirm">Confirm password</label>
+            <div style={{ position: 'relative' }}>
+              <Lock size={16} style={iconStyle} />
+              <input
+                id="reg-confirm"
+                type={showPassword ? 'text' : 'password'}
+                value={confirmPassword}
+                onChange={e => setConfirmPassword(e.target.value)}
+                placeholder="Repeat your password"
+                className="gs-auth-input"
+                style={{ paddingLeft: '2.375rem' }}
+                required
+                disabled={isSubmitting}
+              />
+            </div>
+          </div>
+
+          <button type="submit" disabled={isSubmitting} className="gs-auth-btn">
+            {isSubmitting
+              ? <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> Creating account…</>
+              : 'Create account'
+            }
+          </button>
+        </form>
+
+        <p className="gs-auth-footer" style={{ marginTop: '1.25rem' }}>
+          Already have an account?{' '}
+          <Link to="/login">Sign in</Link>
+        </p>
+      </div>
+
+      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
+    </div>
+  );
 };
 
 export default Register;

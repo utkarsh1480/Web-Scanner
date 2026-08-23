@@ -26,10 +26,11 @@ export async function getGitHubRepositories() {
     return response.data.repositories;
 }
 
-export async function analyzeGitHubRepository(repoFullName, defaultBranch) {
+export async function analyzeGitHubRepository(repoFullName, defaultBranch, targetFolder = null) {
     const response = await axios.post(`${API_BASE}/api/github/analyze`, { 
         repo: repoFullName,
-        defaultBranch
+        defaultBranch,
+        targetFolder
     });
     return response.data;
 }

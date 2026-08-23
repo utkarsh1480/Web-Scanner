@@ -1,27 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { analyzeGitHubRepository } from '../../services/api';
 import CodeSuggestionCard from './CodeSuggestionCard';
 import LoadingSpinner from '../LoadingSpinner';
-import { ArrowLeft, Sparkles } from 'lucide-react';
+import { ArrowLeft, Sparkles, FolderTree, FolderGit2 } from 'lucide-react';
 
-const AnalysisDashboard = ({ repo, onBack }) => {
+const AnalysisDashboard = ({ repo, scanConfig, onBack }) => {
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [results, setResults] = useState(null);
     const [error, setError] = useState(null);
     const [activeTab, setActiveTab] = useState('performance');
 
+    const isFolderScan = scanConfig?.mode === 'folder';
+    const targetFolder = scanConfig?.targetFolder;
+
     const handleAnalyze = async () => {
         setIsAnalyzing(true);
         setError(null);
         try {
-            const data = await analyzeGitHubRepository(repo.full_name, repo.default_branch);
+            const data = await analyzeGitHubRepository(repo.full_name, repo.default_branch, isFolderScan ? targetFolder : null);
             setResults(data);
         } catch (err) {
-            setError(err.response?.data?.error || 'Failed to analyze repository. It may be too large or an error occurred.');
+            setError(err.response?.data?.error || err.message || 'Failed to analyze repository.');
         } finally {
             setIsAnalyzing(false);
         }
     };
+
+    // Automatically trigger analysis on load
+    useEffect(() => {
+        if (repo) {
+            handleAnalyze();
+        }
+    }, [repo, scanConfig]);
 
     const renderSuggestions = (type) => {
         if (!results || !results[type] || results[type].length === 0) {
@@ -56,7 +66,20 @@ const AnalysisDashboard = ({ repo, onBack }) => {
 
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 p-6 border border-border bg-card/50 rounded-xl backdrop-blur-sm">
                 <div>
-                    <h2 className="text-2xl font-bold text-primary mb-1">{repo.full_name}</h2>
+                    <div className="flex items-center gap-3 mb-1">
+                        <h2 className="text-2xl font-bold text-primary">{repo.full_name}</h2>
+                        {isFolderScan ? (
+                            <span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-500/10 text-blue-500 border border-blue-500/20 text-xs font-semibold rounded-full">
+                                <FolderTree className="w-3 h-3" />
+                                Folder Scan: /{targetFolder}
+                            </span>
+                        ) : (
+                            <span className="inline-flex items-center gap-1 px-3 py-1 bg-green-500/10 text-green-500 border border-green-500/20 text-xs font-semibold rounded-full">
+                                <FolderGit2 className="w-3 h-3" />
+                                Full Repo Scan
+                            </span>
+                        )}
+                    </div>
                     <p className="text-sm text-muted-foreground">Default branch: {repo.default_branch}</p>
                 </div>
                 {!results && !isAnalyzing && (
@@ -65,7 +88,7 @@ const AnalysisDashboard = ({ repo, onBack }) => {
                         className="btn-primary inline-flex items-center gap-2 shadow-lg shadow-primary/20"
                     >
                         <Sparkles className="w-4 h-4" />
-                        Analyze Repository
+                        Re-Analyze Repository
                     </button>
                 )}
             </div>
@@ -79,9 +102,14 @@ const AnalysisDashboard = ({ repo, onBack }) => {
             {isAnalyzing && (
                 <div className="flex flex-col items-center justify-center py-20 border border-border bg-card/30 rounded-xl">
                     <LoadingSpinner />
-                    <p className="mt-6 text-lg font-medium animate-pulse text-primary">Scanning repository source code...</p>
+                    <p className="mt-6 text-lg font-medium animate-pulse text-primary">
+                        {isFolderScan ? `Scanning folder /${targetFolder}...` : `Scanning entire repository source code...`}
+                    </p>
                     <p className="text-sm text-muted-foreground mt-2 text-center max-w-md">
-                        Our AI is currently reviewing the files in {repo.name}. This may take a minute depending on the repository size.
+                        {isFolderScan
+                            ? `Our AI is currently auditing files inside the "${targetFolder}" directory of ${repo.name}.`
+                            : `Our AI is currently reviewing the files in ${repo.name}. This may take a minute depending on the repository size.`
+                        }
                     </p>
                 </div>
             )}

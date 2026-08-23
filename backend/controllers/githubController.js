@@ -11,8 +11,8 @@ export const loginWithGitHub = (req, res) => {
         return res.status(500).json({ error: 'GitHub Client ID is not configured.' });
     }
 
-    // We only request the 'repo' scope to read repository contents
-    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=repo`;
+    // We request 'repo' scope and prompt=consent to require explicit user confirmation on re-authenticating
+    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=repo&prompt=consent`;
     
     // Redirect the user to GitHub's OAuth page
     res.redirect(githubAuthUrl);
@@ -41,6 +41,7 @@ export const githubCallback = async (req, res) => {
         const isProduction = process.env.NODE_ENV === 'production';
         
         res.cookie('github_session', jwtToken, {
+            path: '/',
             httpOnly: true, // Prevents XSS
             secure: isProduction,
             sameSite: isProduction ? 'none' : 'lax',
@@ -77,7 +78,7 @@ export const checkAuth = (req, res) => {
 
 // Analyzes a specific repository
 export const analyzeRepo = async (req, res) => {
-    const { repo, defaultBranch } = req.body;
+    const { repo, defaultBranch, targetFolder } = req.body;
     
     if (!repo) {
         return res.status(400).json({ error: 'Repository name is required' });
@@ -85,11 +86,9 @@ export const analyzeRepo = async (req, res) => {
 
     try {
         const githubToken = req.githubToken;
-        // The defaultBranch might be provided by the frontend, otherwise we can assume 'main' or 'master', 
-        // but it's best if the frontend passes the correct default branch from the fetchRepositories call.
         const branch = defaultBranch || 'main'; 
 
-        const analysisResults = await analyzeRepository(repo, branch, githubToken);
+        const analysisResults = await analyzeRepository(repo, branch, githubToken, targetFolder);
         res.json(analysisResults);
     } catch (error) {
         console.error('Analyze Repo Error:', error.message);
@@ -100,10 +99,13 @@ export const analyzeRepo = async (req, res) => {
 // Logs the user out by clearing the session cookie
 export const logoutGitHub = (req, res) => {
     const isProduction = process.env.NODE_ENV === 'production';
-    res.clearCookie('github_session', {
+    const cookieOptions = {
         httpOnly: true,
         secure: isProduction,
         sameSite: isProduction ? 'none' : 'lax'
-    });
+    };
+    res.clearCookie('github_session', { ...cookieOptions, path: '/' });
+    res.clearCookie('github_session', cookieOptions);
+    res.clearCookie('github_session');
     res.json({ message: 'Logged out successfully' });
 };

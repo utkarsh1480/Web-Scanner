@@ -22,8 +22,8 @@ const PORT = process.env.PORT || 3000;
 
 const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
 app.use(cors({ origin: frontendUrl, credentials: true }));  // CORS must be first
-app.use(express.json());                                     // Parse JSON bodies
-app.use(express.urlencoded({ extended: true }));            // Parse form bodies
+app.use(express.json({ limit: '10mb' }));                                     // Parse JSON bodies (up to 10MB for avatar base64)
+app.use(express.urlencoded({ limit: '10mb', extended: true }));            // Parse form bodies
 app.use(cookieParser());                                    // Parse cookies
 
 // Serve uploads statically

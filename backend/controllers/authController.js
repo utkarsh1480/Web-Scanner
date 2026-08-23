@@ -23,6 +23,7 @@ export const registerUser = async (req, res) => {
         const token = generateAccessToken(user._id);
 
         res.cookie("token", token, {
+            path: '/',
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
@@ -60,6 +61,7 @@ export const loginUser = async (req, res) => {
         const token = generateAccessToken(user._id);
 
         res.cookie("token", token, {
+            path: '/',
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
@@ -83,6 +85,7 @@ export const logoutUser = async (req, res) => {
             await TokenBlackList.create({ token });
         }
         res.clearCookie("token", {
+            path: '/',
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
@@ -188,7 +191,7 @@ export const updateProfile = async (req, res) => {
         await user.save();
         res.status(200).json({
             message: "Profile updated successfully",
-            user: { id: user._id, username: user.username, email: user.email, avatar: user.avatar }
+            user: { _id: user._id, id: user._id, username: user.username, email: user.email, avatar: user.avatar }
         });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -221,7 +224,7 @@ export const uploadAvatar = async (req, res) => {
         res.status(200).json({
             message: "Avatar uploaded successfully",
             avatar: avatar,
-            user: { id: user._id, username: user.username, email: user.email, avatar: user.avatar }
+            user: { _id: user._id, id: user._id, username: user.username, email: user.email, avatar: user.avatar }
         });
     } catch (error) {
         res.status(500).json({ message: error.message });

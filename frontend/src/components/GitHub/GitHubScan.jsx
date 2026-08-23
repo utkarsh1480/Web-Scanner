@@ -5,7 +5,7 @@ import { useLanguage } from '../../Context/LanguageContext';
 
 const GitHubScan = () => {
     const { t } = useLanguage();
-    const [selectedRepo, setSelectedRepo] = useState(null);
+    const [selectedRepoState, setSelectedRepoState] = useState(null);
 
     return (
         <div className="container-custom py-12 min-h-[calc(100vh-160px)]">
@@ -19,13 +19,14 @@ const GitHubScan = () => {
                     </p>
                 </div>
 
-                {selectedRepo ? (
+                {selectedRepoState ? (
                     <AnalysisDashboard 
-                        repo={selectedRepo} 
-                        onBack={() => setSelectedRepo(null)} 
+                        repo={selectedRepoState.repo} 
+                        scanConfig={selectedRepoState.scanConfig}
+                        onBack={() => setSelectedRepoState(null)} 
                     />
                 ) : (
-                    <RepositoryList onSelectRepo={setSelectedRepo} />
+                    <RepositoryList onSelectRepo={(repo, scanConfig) => setSelectedRepoState({ repo, scanConfig })} />
                 )}
             </div>
         </div>

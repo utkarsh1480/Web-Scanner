@@ -11,6 +11,7 @@ export async function analyzeWebsite(req, res) {
         }
 
         const lighthouseData = await getPageSpeedReport(url);
+    
         
         // Extract scores
         const categories = lighthouseData?.lighthouseResult?.categories || {};

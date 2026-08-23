@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Routes, Route, Link } from "react-router-dom";
-import { Sun, Moon } from "lucide-react";
 import WebsiteGrader from "./components/WebsiteGrader";
 import Lighthouse from "./components/Lighthouse";
 import GitHubScan from "./components/GitHub/GitHubScan";
@@ -14,7 +13,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useTheme } from "./Context/ThemeContext";
 import { useAuth } from "./Context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./Pages/Login";
@@ -23,151 +21,148 @@ import ForgotPassword from "./Pages/ForgotPassword";
 import ResetPassword from "./Pages/ResetPassword";
 import Profile from "./Pages/Profile";
 
+// Google-style colored dot logo mark
+const LogoDots = () => (
+  <div style={{ display: 'flex', gap: '2px', alignItems: 'center' }}>
+    <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#4285f4', display: 'block' }} />
+    <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#ea4335', display: 'block' }} />
+    <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#fbbc04', display: 'block' }} />
+    <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#34a853', display: 'block' }} />
+  </div>
+);
 
 function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { language, setLanguage, t } = useLanguage();
-  const { theme, toggleTheme } = useTheme();
   const { user, logout } = useAuth();
 
   return (
-    <div className="min-h-screen bg-transparent flex flex-col">
-      {/* Navigation */}
-      <nav className="bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-slate-200/50 dark:border-zinc-800/50 sticky top-0 z-50">
-        <div className="container-custom">
-          <div className="flex items-center justify-between h-20">
-            <div className="flex items-center">
-              <Link to="/" className="hover:opacity-90 transition-opacity flex flex-col items-start leading-none">
-                <span className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{`{web scanner}`}</span>
-                <span className="text-[9px] uppercase tracking-widest text-slate-500 dark:text-white/60 font-semibold mt-0.5">performance rules</span>
-              </Link>
-            </div>
+    <div style={{ minHeight: '100vh', background: '#ffffff', display: 'flex', flexDirection: 'column' }}>
 
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
-              <Link to="/" className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors duration-200 font-medium">{t.navHome}</Link>
-              <Link to="/lighthouse" className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors duration-200 font-medium">{t.navLighthouse}</Link>
-              <Link to="/github/dashboard" className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors duration-200 font-medium flex items-center gap-2">
-                <svg className="w-4 h-4 text-slate-600 dark:text-slate-300" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" /></svg>
+      {/* ── NAVIGATION ── */}
+      <nav className="gs-nav">
+
+
+        {/* Main nav bar */}
+        <div className="gs-nav-main">
+          <div className="gs-nav-main-left">
+            {/* Logo */}
+            <Link to="/" className="gs-logo-link">
+              <LogoDots />
+              <span className="gs-logo-text">Web Scanner</span>
+            </Link>
+
+            {/* Nav items — desktop */}
+            <div className="hidden md:flex items-center">
+              <Link to="/" className="gs-nav-item">Home</Link>
+              <Link to="/lighthouse" className="gs-nav-item">Lighthouse</Link>
+              <Link to="/github/dashboard" className="gs-nav-item" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
                 Code Scan
               </Link>
-              <Link to="/cms" className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors duration-200 font-medium">{t.navServices}</Link>
-              <Link to="/contact" className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors duration-200 font-medium">{t.navContact}</Link>
-              <Select value={language} onValueChange={setLanguage}>
-                <SelectTrigger className="w-[140px] bg-slate-50 dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 text-slate-800 dark:text-white backdrop-blur-sm">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="en"><div className="flex items-center gap-2"><span>🇺🇸</span><span>English</span></div></SelectItem>
-                  <SelectItem value="de"><div className="flex items-center gap-2"><span>🇩🇪</span><span>Deutsch</span></div></SelectItem>
-                  <SelectItem value="es"><div className="flex items-center gap-2"><span>🇪🇸</span><span>Español</span></div></SelectItem>
-                  <SelectItem value="fr"><div className="flex items-center gap-2"><span>🇫🇷</span><span>Français</span></div></SelectItem>
-                  <SelectItem value="ja"><div className="flex items-center gap-2"><span>🇯🇵</span><span>日本語</span></div></SelectItem>
-                  <SelectItem value="pt"><div className="flex items-center gap-2"><span>🇵🇹</span><span>Português</span></div></SelectItem>
-                </SelectContent>
-              </Select>
-              <button
-                onClick={toggleTheme}
-                className="p-2 rounded-xl bg-slate-50 hover:bg-slate-100 dark:bg-zinc-900 dark:hover:bg-zinc-800 text-slate-800 dark:text-white transition-all duration-300"
-                aria-label="Toggle theme"
-              >
-                {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-              </button>
-
-              {user ? (
-                <div className="flex items-center space-x-4 border-l pl-6 border-slate-200 dark:border-white/20">
-                  <Link to="/profile" className="flex items-center gap-2 hover:opacity-85 transition-opacity">
-                    <img src={user.avatar} alt="Avatar" className="w-8 h-8 rounded-full border border-slate-200 dark:border-white/20 object-cover" />
-                    <span className="text-sm font-semibold max-w-[100px] truncate text-slate-800 dark:text-white">{user.username}</span>
-                  </Link>
-                  <button onClick={logout} className="bg-slate-50 hover:bg-slate-100 dark:bg-white/10 text-slate-800 dark:text-white border border-slate-200 dark:border-white/20 text-xs px-3.5 py-2 rounded-full transition-all">
-                    Logout
-                  </button>
-                </div>
-              ) : (
-                <div className="flex items-center space-x-4 border-l pl-6 border-slate-200 dark:border-white/20">
-                  <Link to="/login" className="text-sm font-semibold hover:text-slate-900 text-slate-600 dark:text-slate-300 dark:hover:text-white transition-colors">Sign In</Link>
-                  <Link to="/register" className="bg-[#ff4f22] text-white hover:bg-[#e03b12] font-bold text-xs px-5 py-2.5 rounded-full shadow-md transition-all">Get Started</Link>
-                </div>
-              )}
-            </div>
-
-            {/* Mobile menu button */}
-            <div className="md:hidden">
-              <button
-                className="btn-secondary p-2"
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              >
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  {isMobileMenuOpen ? (
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  ) : (
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                  )}
-                </svg>
-              </button>
+              <Link to="/cms" className="gs-nav-item">{t.navServices}</Link>
+              <Link to="/contact" className="gs-nav-item">{t.navContact}</Link>
             </div>
           </div>
 
-          {/* Mobile Navigation */}
-          {isMobileMenuOpen && (
-            <div className="md:hidden py-4 space-y-4 animate-in slide-in-from-top duration-300">
-              <Link to="/" className="nav-link block py-2" onClick={() => setIsMobileMenuOpen(false)}>{t.navHome}</Link>
-              <Link to="/lighthouse" className="nav-link block py-2" onClick={() => setIsMobileMenuOpen(false)}>{t.navLighthouse}</Link>
-              <Link to="/github/dashboard" className="nav-link text-primary font-medium block py-2 flex items-center gap-2" onClick={() => setIsMobileMenuOpen(false)}>
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" /></svg>
-                Code Scan
-              </Link>
-              <Link to="/cms" className="nav-link block py-2" onClick={() => setIsMobileMenuOpen(false)}>{t.navServices}</Link>
-              <Link to="/contact" className="nav-link block py-2" onClick={() => setIsMobileMenuOpen(false)}>{t.navContact}</Link>
-              <div className="py-2">
-                <Select value={language} onValueChange={setLanguage}>
-                  <SelectTrigger className="w-full bg-card/80 backdrop-blur-sm"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="en"><div className="flex items-center gap-2"><span>🇺🇸</span><span>English</span></div></SelectItem>
-                    <SelectItem value="de"><div className="flex items-center gap-2"><span>🇩🇪</span><span>Deutsch</span></div></SelectItem>
-                    <SelectItem value="es"><div className="flex items-center gap-2"><span>🇪🇸</span><span>Español</span></div></SelectItem>
-                    <SelectItem value="fr"><div className="flex items-center gap-2"><span>🇫🇷</span><span>Français</span></div></SelectItem>
-                    <SelectItem value="ja"><div className="flex items-center gap-2"><span>🇯🇵</span><span>日本語</span></div></SelectItem>
-                    <SelectItem value="pt"><div className="flex items-center gap-2"><span>🇵🇹</span><span>Português</span></div></SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <button onClick={toggleTheme} className="w-full py-2 flex items-center gap-2 nav-link">
-                {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-                {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
-              </button>
+          <div className="gs-nav-main-right">
+            {/* Language picker — desktop */}
+            <div className="hidden md:flex items-center">
+              <Select value={language} onValueChange={setLanguage}>
+                <SelectTrigger
+                  className="h-8 w-auto border-0 bg-transparent text-sm text-gray-600 focus:ring-0 shadow-none gap-1"
+                  style={{ background: 'transparent', border: 'none', boxShadow: 'none' }}
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent style={{ background: '#fff', border: '1px solid #e8eaed', borderRadius: 8 }}>
+                  {[['en','🇺🇸 EN'],['de','🇩🇪 DE'],['es','🇪🇸 ES'],['fr','🇫🇷 FR'],['ja','🇯🇵 JA'],['pt','🇵🇹 PT']].map(([val, label]) => (
+                    <SelectItem key={val} value={val}><span style={{ color: '#202124', fontSize: '0.875rem' }}>{label}</span></SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
+            {user ? (
+              <div className="hidden md:flex items-center gap-2">
+                <Link to="/profile" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none' }}>
+                  <img src={user.avatar} alt="Avatar" style={{ width: 28, height: 28, borderRadius: '50%', border: '2px solid #e8eaed', objectFit: 'cover' }} />
+                  <span style={{ fontSize: '0.875rem', fontWeight: 500, color: '#3c4043', maxWidth: 100, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.username}</span>
+                </Link>
+                <button onClick={logout} className="gs-btn-signin" style={{ fontSize: '0.8125rem', padding: '0.375rem 0.875rem' }}>
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <div className="hidden md:flex items-center gap-2">
+                <Link to="/login" className="gs-btn-signin">Sign in</Link>
+                <Link to="/register" className="gs-btn-start">Start now</Link>
+              </div>
+            )}
+
+            {/* Hamburger — mobile */}
+            <button
+              className="md:hidden"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              style={{ padding: '0.5rem', background: 'none', border: 'none', cursor: 'pointer', color: '#5f6368' }}
+              aria-label="Menu"
+            >
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                {isMobileMenuOpen ? (
+                  <path d="M2 2L18 18M2 18L18 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                ) : (
+                  <path d="M2 5h16M2 10h16M2 15h16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                )}
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile dropdown */}
+        {isMobileMenuOpen && (
+          <div style={{
+            borderTop: '1px solid #e8eaed',
+            background: '#fff',
+            padding: '0.5rem 0 1rem',
+          }}>
+            {[['/', 'Home'], ['/lighthouse', 'Lighthouse'], ['/github/dashboard', 'Code Scan'], ['/cms', 'Services'], ['/contact', 'Contact']].map(([href, label]) => (
+              <Link
+                key={href}
+                to={href}
+                onClick={() => setIsMobileMenuOpen(false)}
+                style={{ display: 'block', padding: '0.625rem 1.5rem', fontSize: '0.9375rem', fontWeight: 500, color: '#3c4043', textDecoration: 'none' }}
+                onMouseEnter={e => e.currentTarget.style.background = '#f1f3f4'}
+                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+              >
+                {label}
+              </Link>
+            ))}
+            <div style={{ borderTop: '1px solid #e8eaed', margin: '0.75rem 1.5rem', paddingTop: '0.75rem', display: 'flex', gap: '0.5rem' }}>
               {user ? (
-                <div className="pt-4 border-t border-border space-y-3">
-                  <Link to="/profile" className="flex items-center gap-2 px-2 hover:opacity-85 transition-opacity" onClick={() => setIsMobileMenuOpen(false)}>
-                    <img src={user.avatar} alt="Avatar" className="w-8 h-8 rounded-full border border-primary/20 object-cover" />
-                    <span className="text-sm font-semibold text-foreground">{user.username}</span>
-                  </Link>
-                  <button onClick={() => { logout(); setIsMobileMenuOpen(false); }} className="w-full text-left py-2 px-2 text-destructive font-medium hover:bg-destructive/5 rounded-lg transition-colors">
-                    Logout
-                  </button>
-                </div>
+                <button onClick={() => { logout(); setIsMobileMenuOpen(false); }} className="gs-btn-signin" style={{ width: '100%', justifyContent: 'center' }}>
+                  Logout
+                </button>
               ) : (
-                <div className="pt-4 border-t border-border flex flex-col gap-2">
-                  <Link to="/login" className="w-full text-center py-2 px-4 rounded-xl border border-border hover:bg-secondary/20 transition-colors text-foreground font-semibold text-sm" onClick={() => setIsMobileMenuOpen(false)}>Sign In</Link>
-                  <Link to="/register" className="w-full text-center py-2.5 px-4 rounded-xl btn-primary text-sm" onClick={() => setIsMobileMenuOpen(false)}>Sign Up</Link>
-                </div>
+                <>
+                  <Link to="/login" className="gs-btn-signin" style={{ flex: 1, justifyContent: 'center' }} onClick={() => setIsMobileMenuOpen(false)}>Sign in</Link>
+                  <Link to="/register" className="gs-btn-start" style={{ flex: 1, justifyContent: 'center' }} onClick={() => setIsMobileMenuOpen(false)}>Start now</Link>
+                </>
               )}
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </nav>
 
-      {/* Main content */}
-      <main className="flex-grow">
+      {/* ── MAIN CONTENT ── */}
+      <main style={{ flex: 1 }}>
         <Routes>
           <Route path="/" element={<WebsiteGrader />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
-
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/lighthouse" element={<ProtectedRoute><Lighthouse /></ProtectedRoute>} />
           <Route path="/github/dashboard" element={<ProtectedRoute><GitHubScan /></ProtectedRoute>} />
@@ -176,36 +171,42 @@ function App() {
         </Routes>
       </main>
 
-
-      {/* Footer */}
-      <footer className="bg-card/80 backdrop-blur-lg border-t border-border">
-        <div className="container-custom py-12">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            <div className="space-y-4">
-              <h3 className="text-xl font-semibold">Web Scanner</h3>
-              <p className="text-muted-foreground">{t.footerAbout}</p>
-            </div>
-            <div className="space-y-4">
-              <h3 className="text-xl font-semibold">{t.footerQuickLinks}</h3>
-              <ul className="space-y-3">
-                <li><Link to="/" className="nav-link">{t.navHome}</Link></li>
-                <li><Link to="/lighthouse" className="nav-link">{t.navLighthouse}</Link></li>
-                <li><Link to="/cms" className="nav-link">{t.navServices}</Link></li>
-              </ul>
-            </div>
-            <div className="space-y-4">
-              <h3 className="text-xl font-semibold">{t.footerContactTitle}</h3>
-              <p className="text-muted-foreground">{t.footerContactText}</p>
-              <Link to="/contact" className="btn-primary inline-flex items-center">
-                {t.footerContactBtn}
-                <svg className="ml-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
+      {/* ── FOOTER ── */}
+      <footer className="gs-footer">
+        <div className="gs-footer-inner">
+          <div className="gs-footer-top">
+            <div>
+              <Link to="/" className="gs-logo-link" style={{ marginBottom: '0.75rem', display: 'inline-flex', textDecoration: 'none' }}>
+                <LogoDots />
+                <span className="gs-logo-text">Web Scanner</span>
               </Link>
+              <p style={{ fontSize: '0.8125rem', color: '#5f6368', marginTop: '0.5rem', lineHeight: 1.6 }}>
+                {t.footerAbout}
+              </p>
+            </div>
+
+            <div>
+              <p className="gs-footer-col-title">Tools</p>
+              <Link to="/" className="gs-footer-link">Web Grader</Link>
+              <Link to="/lighthouse" className="gs-footer-link">Lighthouse Audit</Link>
+              <Link to="/github/dashboard" className="gs-footer-link">Code Scanner</Link>
+            </div>
+
+            <div>
+              <p className="gs-footer-col-title">Company</p>
+              <Link to="/cms" className="gs-footer-link">Services</Link>
+              <Link to="/contact" className="gs-footer-link">Contact Us</Link>
+            </div>
+
+            <div>
+              <p className="gs-footer-col-title">Account</p>
+              <Link to="/login" className="gs-footer-link">Sign in</Link>
+              <Link to="/register" className="gs-footer-link">Create account</Link>
             </div>
           </div>
-          <div className="mt-12 pt-8 border-t border-border text-center text-muted-foreground">
-            <p>&copy; {new Date().getFullYear()} {t.footerRights}</p>
+
+          <div className="gs-footer-bottom">
+            <span className="gs-footer-copy">© {new Date().getFullYear()} Web Scanner · {t.footerRights}</span>
           </div>
         </div>
       </footer>

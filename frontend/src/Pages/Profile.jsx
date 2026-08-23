@@ -45,6 +45,13 @@ const Profile = () => {
         fileInputRef.current.click();
     };
 
+    // Keep local username state in sync with context user
+    React.useEffect(() => {
+        if (user?.username) {
+            setUsername(user.username);
+        }
+    }, [user?.username]);
+
     const handleFileChange = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
@@ -69,9 +76,12 @@ const Profile = () => {
             updateUser(res.user);
             setSuccessMessage('Profile photo updated successfully!');
         } catch (err) {
-            setErrorMessage(err.response?.data?.message || 'Failed to upload image.');
+            setErrorMessage(err.response?.data?.message || err.message || 'Failed to upload image.');
         } finally {
             setIsUploadingAvatar(false);
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
         }
     };
 
