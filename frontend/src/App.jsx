@@ -6,6 +6,7 @@ import GitHubScan from "./components/GitHub/GitHubScan";
 import Contact from './components/Contact';
 import Services from "./components/Servicepage";
 import { useLanguage } from "./Context/LanguageContext";
+import { useTheme } from "./Context/ThemeContext";
 import {
   Select,
   SelectContent,
@@ -31,13 +32,33 @@ const LogoDots = () => (
   </div>
 );
 
+// Sun icon (light mode)
+const SunIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 13, height: 13, color: '#fbbc04' }}>
+    <circle cx="12" cy="12" r="5"/>
+    <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+    <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+  </svg>
+);
+
+// Moon icon (dark mode)
+const MoonIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor" style={{ width: 11, height: 11, color: '#1a73e8' }}>
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+  </svg>
+);
+
 function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { language, setLanguage, t } = useLanguage();
   const { user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
+  const isDark = theme === 'dark';
 
   return (
-    <div style={{ minHeight: '100vh', background: '#ffffff', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ minHeight: '100vh', background: isDark ? '#0f1117' : '#ffffff', display: 'flex', flexDirection: 'column', transition: 'background 0.3s ease' }}>
 
       {/* ── NAVIGATION ── */}
       <nav className="gs-nav">
@@ -68,6 +89,18 @@ function App() {
           </div>
 
           <div className="gs-nav-main-right">
+            {/* Theme toggle — desktop */}
+            <button
+              onClick={toggleTheme}
+              className={`theme-toggle-btn hidden md:flex${isDark ? ' dark-active' : ''}`}
+              aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+              title={isDark ? 'Light mode' : 'Dark mode'}
+            >
+              <span className="theme-toggle-thumb">
+                {isDark ? <MoonIcon /> : <SunIcon />}
+              </span>
+            </button>
+
             {/* Language picker — desktop */}
             <div className="hidden md:flex items-center">
               <Select value={language} onValueChange={setLanguage}>
@@ -123,8 +156,8 @@ function App() {
         {/* Mobile dropdown */}
         {isMobileMenuOpen && (
           <div style={{
-            borderTop: '1px solid #e8eaed',
-            background: '#fff',
+            borderTop: `1px solid ${isDark ? '#2d3142' : '#e8eaed'}`,
+            background: isDark ? '#1a1d26' : '#fff',
             padding: '0.5rem 0 1rem',
           }}>
             {[['/', 'Home'], ['/lighthouse', 'Lighthouse'], ['/github/dashboard', 'Code Scan'], ['/cms', 'Services'], ['/contact', 'Contact']].map(([href, label]) => (
@@ -139,7 +172,25 @@ function App() {
                 {label}
               </Link>
             ))}
-            <div style={{ borderTop: '1px solid #e8eaed', margin: '0.75rem 1.5rem', paddingTop: '0.75rem', display: 'flex', gap: '0.5rem' }}>
+            <div style={{ borderTop: `1px solid ${isDark ? '#2d3142' : '#e8eaed'}`, margin: '0.75rem 1.5rem', paddingTop: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              {/* Theme toggle — mobile */}
+              <button
+                onClick={toggleTheme}
+                style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  padding: '0.625rem 0', background: 'none', border: 'none', cursor: 'pointer',
+                  fontSize: '0.9375rem', fontWeight: 500, color: isDark ? '#c5c8d1' : '#3c4043',
+                  fontFamily: 'inherit',
+                }}
+              >
+                <span>{isDark ? '☀️ Light mode' : '🌙 Dark mode'}</span>
+                <span className={`theme-toggle-btn${isDark ? ' dark-active' : ''}`} style={{ width: 36, height: 20, pointerEvents: 'none' }}>
+                  <span className="theme-toggle-thumb" style={{ width: 14, height: 14 }}>
+                    {isDark ? <MoonIcon /> : <SunIcon />}
+                  </span>
+                </span>
+              </button>
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
               {user ? (
                 <button onClick={() => { logout(); setIsMobileMenuOpen(false); }} className="gs-btn-signin" style={{ width: '100%', justifyContent: 'center' }}>
                   Logout
@@ -150,6 +201,7 @@ function App() {
                   <Link to="/register" className="gs-btn-start" style={{ flex: 1, justifyContent: 'center' }} onClick={() => setIsMobileMenuOpen(false)}>Start now</Link>
                 </>
               )}
+              </div>
             </div>
           </div>
         )}
