@@ -1,16 +1,25 @@
 import axios from 'axios';
 
+// Vercel Hobby serverless functions are hard-capped at 10 seconds.
+// The PageSpeed API often takes 15–25 s, so we set an 8 s timeout so the
+// catch block has time to return mock data before Vercel kills the function.
+const PAGESPEED_TIMEOUT_MS = 8000;
+
 export async function getPageSpeedReport(url) {
     try {
         const apiKey = process.env.PAGESPEED_API_KEY;
         const isPlaceholder = !apiKey || apiKey.includes('your_') || apiKey === '';
         const apiStr = isPlaceholder ? '' : `&key=${apiKey}`;
         const response = await axios.get(
-            `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&category=performance&category=accessibility&category=seo&category=best-practices${apiStr}`
+            `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&category=performance&category=accessibility&category=seo&category=best-practices${apiStr}`,
+            { timeout: PAGESPEED_TIMEOUT_MS }
         );
         return response.data;
     } catch (error) {
-        console.warn('⚠️ Google PageSpeed API limit or error encountered. Returning high-fidelity simulated report for development.');
+        const reason = error.code === 'ECONNABORTED'
+            ? 'timeout after 8 s'
+            : (error.response?.status ?? error.message);
+        console.warn(`⚠️ Google PageSpeed API unavailable (${reason}). Returning simulated report.`);
         return getMockReport(url);
     }
 }

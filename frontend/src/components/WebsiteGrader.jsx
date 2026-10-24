@@ -165,13 +165,30 @@ const WebsiteGrader = () => {
       navigate('/lighthouse', { state: { analysisData: data } });
     } catch (err) {
       // This catch only fires when analyzeWebsite() itself fails
+      const status = err?.response?.status;
+
+      // Safely extract a readable message from the response body
+      const rawData = err?.response?.data;
       const backendMsg =
-        err?.response?.data?.error ||
-        err?.response?.data?.message ||
-        err?.response?.statusText;
-      const displayMsg = backendMsg || err?.message || 'An unknown error occurred.';
-      const statusCode = err?.response?.status ? ` (HTTP ${err.response.status})` : '';
-      setError(`Failed to fetch performance data: ${displayMsg}${statusCode}`);
+        (typeof rawData === 'string' && !rawData.startsWith('<') ? rawData : null) ||
+        rawData?.error ||
+        rawData?.message ||
+        err?.response?.statusText ||
+        err?.message;
+
+      let displayMsg =
+        (typeof backendMsg === 'string' ? backendMsg : JSON.stringify(backendMsg)) ||
+        'An unknown error occurred.';
+
+      // Give a friendlier hint for common HTTP errors
+      if (status === 504) {
+        displayMsg = 'The scan timed out on the server. Please try again — the site may be slow to respond.';
+      } else if (status === 503) {
+        displayMsg = 'The server is temporarily unavailable. Please try again in a moment.';
+      }
+
+      const statusLabel = status ? ` (HTTP ${status})` : '';
+      setError(`Scan failed: ${displayMsg}${statusLabel}`);
     } finally {
       setLoading(false);
     }
