@@ -58,7 +58,7 @@ function App() {
   const isDark = theme === 'dark';
 
   return (
-    <div style={{ minHeight: '100vh', background: isDark ? '#0f1117' : '#ffffff', display: 'flex', flexDirection: 'column', transition: 'background 0.3s ease' }}>
+    <div className={isDark ? "dark" : ""} style={{ minHeight: '100vh', background: isDark ? '#0f1117' : '#ffffff', display: 'flex', flexDirection: 'column', transition: 'background 0.3s ease' }}>
 
       {/* ── NAVIGATION ── */}
       <nav className="gs-nav">
@@ -83,23 +83,26 @@ function App() {
                 </svg>
                 {t.navGitHub}
               </Link>
-              <Link to="/cms" className="gs-nav-item">{t.navServices}</Link>
-              <Link to="/contact" className="gs-nav-item">{t.navContact}</Link>
+              <Link to="/cms" className="gs-nav-item">{t.navServices || "Services"}</Link>
+              <Link to="/contact" className="gs-nav-item">{t.navContact || "Contact"}</Link>
             </div>
           </div>
 
           <div className="gs-nav-main-right">
             {/* Theme toggle — desktop */}
-            <button
-              onClick={toggleTheme}
-              className={`theme-toggle-btn hidden md:flex${isDark ? ' dark-active' : ''}`}
-              aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-              title={isDark ? 'Light mode' : 'Dark mode'}
-            >
-              <span className="theme-toggle-thumb">
-                {isDark ? <MoonIcon /> : <SunIcon />}
-              </span>
-            </button>
+            <div className="hidden md:flex items-center">
+              <button
+                type="button"
+                onClick={toggleTheme}
+                className={`theme-toggle-btn${isDark ? ' dark-active' : ''}`}
+                aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+                title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+              >
+                <span className="theme-toggle-thumb">
+                  {isDark ? <MoonIcon /> : <SunIcon />}
+                </span>
+              </button>
+            </div>
 
             {/* Language picker — desktop */}
             <div className="hidden md:flex items-center">
