@@ -139,6 +139,8 @@ const WebsiteGrader = () => {
         setError('Please enter a valid URL (e.g. https://example.com)');
         setLoading(false); return;
       }
+
+      // ── 1. Fetch analysis data (critical) ───────────────────────────────────
       const { analyzeWebsite } = await import('../services/api.js');
       const data = await analyzeWebsite(checkedUrl);
       const { scores, url: verifiedUrl } = data;
@@ -147,15 +149,22 @@ const WebsiteGrader = () => {
       const bp   = scores.details.find(d => d.label === 'Best Practices')?.score || 0;
       const seo  = scores.details.find(d => d.label === 'SEO')?.score || 0;
 
-      await emailjs.send('service_sd4ada7', 'template_xcy5z5u', {
-        from_name: 'Web Scanner',
-        to_email: email.trim(),
-        message: `${verifiedUrl}\nPerformance: ${perf}\nAccessibility: ${a11y}\nBest Practices: ${bp}\nSEO: ${seo}\nAggregate: ${((perf+a11y+bp+seo)/4).toFixed(1)}`,
-      }, '-243iobnGw0PSzPnp');
+      // ── 2. Send email report (non-critical — failure must NOT block results) ─
+      try {
+        await emailjs.send('service_sd4ada7', 'template_xcy5z5u', {
+          from_name: 'Web Scanner',
+          to_email: email.trim(),
+          message: `${verifiedUrl}\nPerformance: ${perf}\nAccessibility: ${a11y}\nBest Practices: ${bp}\nSEO: ${seo}\nAggregate: ${((perf+a11y+bp+seo)/4).toFixed(1)}`,
+        }, '-243iobnGw0PSzPnp');
+      } catch (emailErr) {
+        // Email send failed — log it but don't block navigation to results
+        console.warn('EmailJS send failed (non-critical):', emailErr?.message || emailErr);
+      }
 
+      // ── 3. Navigate to results regardless of email success ──────────────────
       navigate('/lighthouse', { state: { analysisData: data } });
     } catch (err) {
-      // Prefer the backend's JSON error message; fall back to Axios message
+      // This catch only fires when analyzeWebsite() itself fails
       const backendMsg =
         err?.response?.data?.error ||
         err?.response?.data?.message ||
