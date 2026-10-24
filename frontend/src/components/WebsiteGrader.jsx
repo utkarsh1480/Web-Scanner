@@ -155,7 +155,14 @@ const WebsiteGrader = () => {
 
       navigate('/lighthouse', { state: { analysisData: data } });
     } catch (err) {
-      setError(`Failed to fetch performance data: ${err.message}`);
+      // Prefer the backend's JSON error message; fall back to Axios message
+      const backendMsg =
+        err?.response?.data?.error ||
+        err?.response?.data?.message ||
+        err?.response?.statusText;
+      const displayMsg = backendMsg || err?.message || 'An unknown error occurred.';
+      const statusCode = err?.response?.status ? ` (HTTP ${err.response.status})` : '';
+      setError(`Failed to fetch performance data: ${displayMsg}${statusCode}`);
     } finally {
       setLoading(false);
     }

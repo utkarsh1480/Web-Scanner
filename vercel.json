@@ -3,6 +3,14 @@
   "outputDirectory": "frontend/dist",
   "installCommand": "npm install && cd frontend && npm install && cd ../backend && npm install",
   "framework": "vite",
+  "functions": {
+    "api/index.js": {
+      "maxDuration": 30
+    }
+  },
+  "env": {
+    "NODE_ENV": "production"
+  },
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/index.js" },
     { "source": "/(.*)", "destination": "/index.html" }

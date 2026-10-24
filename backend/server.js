@@ -14,17 +14,56 @@ const __dirname = path.dirname(__filename);
 
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 
-// Connect to MongoDB first, then start the server
-await db();
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-app.use(cors({ origin: frontendUrl, credentials: true }));  // CORS must be first
-app.use(express.json({ limit: '10mb' }));                                     // Parse JSON bodies (up to 10MB for avatar base64)
-app.use(express.urlencoded({ limit: '10mb', extended: true }));            // Parse form bodies
-app.use(cookieParser());                                    // Parse cookies
+// ── CORS ──────────────────────────────────────────────────────────────────────
+// Build a list of allowed origins from env + sensible defaults.
+// FRONTEND_URL can be a comma-separated list of allowed origins, e.g.:
+//   https://web-scanner.vercel.app,http://localhost:5173
+const rawOrigins = process.env.FRONTEND_URL || 'http://localhost:5173';
+const allowedOrigins = rawOrigins
+    .split(',')
+    .map((o) => o.trim())
+    .filter(Boolean);
+
+app.use(
+    cors({
+        origin: (origin, callback) => {
+            // Allow requests with no origin (curl, Postman, same-origin server calls)
+            if (!origin) return callback(null, true);
+            // Allow any *.vercel.app subdomain so preview deployments also work
+            const isVercel = /\.vercel\.app$/.test(origin);
+            if (isVercel || allowedOrigins.includes(origin)) {
+                return callback(null, true);
+            }
+            console.warn(`CORS blocked origin: ${origin}`);
+            return callback(new Error(`CORS policy: origin ${origin} not allowed`));
+        },
+        credentials: true,
+    })
+);
+
+app.use(express.json({ limit: '10mb' }));           // Parse JSON bodies (up to 10MB for avatar base64)
+app.use(express.urlencoded({ limit: '10mb', extended: true })); // Parse form bodies
+app.use(cookieParser());                             // Parse cookies
+
+// ── Lazy / cached MongoDB connection ─────────────────────────────────────────
+// Using a middleware instead of a top-level await keeps Vercel serverless
+// cold-starts from failing when the DB is momentarily unreachable.
+let dbConnected = false;
+app.use(async (_req, _res, next) => {
+    if (!dbConnected) {
+        try {
+            await db();
+            dbConnected = true;
+        } catch (err) {
+            console.error('MongoDB connection error:', err.message);
+            // Don't crash the whole request — routes that don't need DB will still work
+        }
+    }
+    next();
+});
 
 // Serve uploads statically
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
